@@ -6,15 +6,10 @@ export default function Social({ name, url }: { name: string; url: string }) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-foreground group bg-secondary hover:bg-accent-pop hover:text-accent-pop-foreground relative flex shrink-0 gap-[1px] rounded-full px-2.5 py-1 text-sm font-mono transition-colors"
+      className="text-accent-pop group relative font-mono text-sm transition-colors hover:opacity-70 after:absolute after:bottom-[1px] after:left-0 after:h-[1px] after:w-full after:bg-accent-pop after:transition-transform"
     >
       {name}
-      <div className="relative h-4 w-4 overflow-hidden">
-        <div className="absolute transition-transform group-hover:translate-x-3 group-hover:-translate-y-4">
-          <ArrowUpRight className="stroke-muted-foreground h-4 w-4" />
-          <ArrowUpRight className="h-4 w-4 -translate-x-3" />
-        </div>
-      </div>
+      <ArrowUpRight className="ml-0.5 inline-block h-3.5 w-3.5 stroke-current" />
     </a>
   );
 }
