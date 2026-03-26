@@ -6,7 +6,7 @@ export default function Social({ name, url }: { name: string; url: string }) {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-foreground group bg-secondary hover:bg-primary hover:text-primary-foreground relative flex shrink-0 gap-[1px] rounded-full px-2.5 py-1 text-sm transition-colors"
+      className="text-foreground group bg-secondary hover:bg-accent-pop hover:text-accent-pop-foreground relative flex shrink-0 gap-[1px] rounded-full px-2.5 py-1 text-sm font-mono transition-colors"
     >
       {name}
       <div className="relative h-4 w-4 overflow-hidden">

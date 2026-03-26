@@ -26,6 +26,9 @@
   --color-accent: hsl(var(--accent));
   --color-accent-foreground: hsl(var(--accent-foreground));
 
+  --color-accent-pop: hsl(var(--accent-pop));
+  --color-accent-pop-foreground: hsl(var(--accent-pop-foreground));
+
   --color-popover: hsl(var(--popover));
   --color-popover-foreground: hsl(var(--popover-foreground));
 
@@ -76,6 +79,17 @@
       transform: translateY(0);
     }
   }
+
+  --animate-shimmer: shimmer 2s ease-in-out infinite;
+
+  @keyframes shimmer {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
 }
 
 @utility container {
@@ -116,63 +130,69 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 47 13% 91.8%;
     --foreground: 240 10% 3.9%;
     --muted-foreground: 240 5% 34%;
     --primary: 240 5.9% 10%;
     --primary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 88%;
-    --popover: 0 0% 100%;
+    --muted: 44 10% 83%;
+    --popover: 47 13% 91.8%;
     --popover-foreground: 224 71.4% 4.1%;
 
-    --card: 0 0% 100%;
+    --card: 47 13% 93%;
     --card-foreground: 224 71.4% 4.1%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
+    --border: 44 10% 82%;
+    --input: 44 10% 82%;
 
-    --secondary: 0 0% 96%;
+    --secondary: 44 10% 88%;
     --secondary-foreground: 0 0% 20%;
 
-    --accent: 220 14.3% 95.9%;
+    --accent: 44 10% 88%;
     --accent-foreground: 220.9 39.3% 11%;
 
     --destructive: 0 72.2% 50.6%;
     --destructive-foreground: 210 20% 98%;
 
-    --ring: 220 13% 91%;
+    --ring: 44 10% 82%;
+
+    --accent-pop: 25 100% 11%;
+    --accent-pop-foreground: 0 0% 98%;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --muted-foreground: 240 5% 75%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
+    --background: 30 5% 6%;
+    --foreground: 40 10% 92%;
+    --muted-foreground: 30 5% 65%;
+    --primary: 40 10% 92%;
+    --primary-foreground: 30 5% 6%;
 
-    --muted: 0 0% 30%;
-    --popover: 0 0% 7%;
-    --popover-foreground: 210 20% 98%;
+    --muted: 30 5% 25%;
+    --popover: 30 5% 8%;
+    --popover-foreground: 40 10% 92%;
 
-    --card: 0 0% 7%;
-    --card-foreground: 210 20% 98%;
+    --card: 30 5% 8%;
+    --card-foreground: 40 10% 92%;
 
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
+    --border: 30 5% 18%;
+    --input: 30 5% 18%;
 
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 75%;
+    --secondary: 30 5% 14%;
+    --secondary-foreground: 30 5% 65%;
 
-    --accent: 0 0% 18%;
-    --accent-foreground: 210 20% 98%;
+    --accent: 30 5% 18%;
+    --accent-foreground: 40 10% 92%;
 
     --destructive: 355 100% 75%;
     --destructive-foreground: 210 20% 98%;
 
-    --ring: 0 0% 40%;
+    --ring: 30 5% 35%;
+
+    --accent-pop: 30 80% 55%;
+    --accent-pop-foreground: 30 5% 6%;
   }
 }
 
@@ -186,10 +206,14 @@
   }
 }
 
-/* Ensure sufficient contrast for selection */
+/* Custom text selection with accent color */
 ::selection {
-  background-color: hsl(var(--foreground) / 0.1);
-  color: hsl(var(--foreground));
+  background-color: hsl(var(--accent-pop));
+  color: hsl(var(--accent-pop-foreground));
+}
+::-moz-selection {
+  background-color: hsl(var(--accent-pop));
+  color: hsl(var(--accent-pop-foreground));
 }
 
 /* Improve text readability */

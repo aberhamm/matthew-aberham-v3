@@ -18,11 +18,7 @@ export const Experiment = ({
   const rotation = rotations[index % rotations.length];
 
   const commonProps = {
-    className: `select-none size-28 lg:size-36 bg-background border rounded-lg overflow-hidden ${
-      index !== 0
-        ? 'shadow-[-4px_0px_6px_rgba(0,0,0,0.04)]'
-        : 'shadow-[-4px_0px_6px_rgba(0,0,0,0.04)] sm:shadow-transparent'
-    } hover:shadow-[0_6px_12px_rgba(0,0,0,0.08)] transition-all duration-250 [transform:rotate(var(--rotation))] hover:[transform:rotate(var(--rotation))_translateY(-12px)]`,
+    className: `select-none size-28 lg:size-36 bg-background border border-foreground/10 rounded-sm overflow-hidden shadow-[3px_3px_0px_hsl(var(--accent-pop))] hover:shadow-[5px_5px_0px_hsl(var(--accent-pop))] transition-all duration-250 [transform:rotate(var(--rotation))] hover:[transform:rotate(var(--rotation))_translateY(-6px)]`,
     style: { '--rotation': `${rotation}deg` } as React.CSSProperties,
   };
 
