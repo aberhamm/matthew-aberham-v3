@@ -1,6 +1,6 @@
 ---
 title: 'E-Commerce Platform Revamp'
-description: 'Led the modernization of a high-traffic e-commerce platform, focusing on performance, accessibility, and scalability. Re-architected the front-end using React, Next.js, and microservices, improving developer workflows and creating a more seamless user experience.'
+description: 'Migrated a legacy Sitecore MVC monolith to a scalable Next.js monorepo serving 16 million hits per month. Introduced hybrid rendering, strict accessibility compliance, and a shared design system.'
 date: 2025-01-01
 published: true
 technologies: ['React', 'Next.js', 'TypeScript', 'Microservices', 'PostgreSQL']
@@ -72,7 +72,7 @@ Next.js provides **multiple rendering strategies** to balance **performance and 
 | ----------------------------------------- | ------------------------------------------ | --------------------------------------------- | --------------------------------- |
 | **Server-Side Rendering (SSR)**           | Personalized pages, user-specific content  | Always up-to-date                             | Higher TTFB (Time to First Byte)  |
 | **Static Site Generation (SSG)**          | Marketing pages, blogs                     | Fastest load times, pre-generated HTML        | Content needs a rebuild to update |
-| **Incremental Static Regeneration (ISR)** | Product catalogs, frequently updated pages | Hybrid approach—static with on-demand updates | Stale content until revalidation  |
+| **Incremental Static Regeneration (ISR)** | Product catalogs, frequently updated pages | Hybrid approach: static with on-demand updates | Stale content until revalidation  |
 
 #### **SSR (Server-Side Rendering)**
 
