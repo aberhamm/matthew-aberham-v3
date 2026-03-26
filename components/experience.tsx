@@ -18,7 +18,7 @@ export default function Experience({
     <div className="flex flex-col gap-0.5">
       <div className="flex flex-row items-center gap-2">
         <h3 className="font-semibold">{name}</h3>
-        <span className="text-sm text-zinc-800">
+        <span className="text-xs font-mono text-muted-foreground tracking-wide">
           {period.start} - {period.end}
         </span>
       </div>

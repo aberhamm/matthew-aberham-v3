@@ -26,6 +26,10 @@ const config: Config = {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
         },
+        'accent-pop': {
+          DEFAULT: 'hsl(var(--accent-pop))',
+          foreground: 'hsl(var(--accent-pop-foreground))',
+        },
       },
     },
   },

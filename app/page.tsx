@@ -1,16 +1,14 @@
 import Experience from '@/components/experience';
 import Project from '@/components/project';
 import { Section } from '@/components/section';
-import { Experiment } from '@/components/experiment';
 import Social from '@/components/social';
 import Link from 'next/link';
 import { Footer } from '@/components/footer';
-import { getProjects, getExperiences, getCrafts } from '@/lib/content';
+import { getProjects, getExperiences } from '@/lib/content';
 
 export default function Home() {
   const projects = getProjects();
   const experiences = getExperiences();
-  const crafts = getCrafts();
 
   return (
     <>
@@ -71,27 +69,10 @@ export default function Home() {
             ))}
           </Section>
 
-          {/* Experiments */}
-          <Section title="">
-            <div className="relative mt-2 -ml-2.5 w-full sm:ml-0 md:h-[150px]">
-              <div className="flex flex-wrap justify-center gap-4 gap-x-0 -space-x-4 md:absolute md:left-1/2 md:-translate-x-1/2 md:flex-nowrap md:gap-0!">
-                {crafts.map((craft, index) => (
-                  <Experiment
-                    key={craft.slug}
-                    index={index}
-                    image={`/crafts/${craft.slug}.png`}
-                    path={`/crafts/${craft.slug}`}
-                    decorative={true}
-                  />
-                ))}
-              </div>
-            </div>
-          </Section>
-
           {/* Contact */}
           <Section
             title="Contact"
-            className="flex flex-row items-center justify-start gap-2"
+            className="flex flex-row items-center justify-start gap-4"
           >
             <Social name="Email" url="mailto:contact@matthewaberham.com" />
             <Social name="GitHub" url="https://github.com/aberhamm" />
