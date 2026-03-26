@@ -22,21 +22,21 @@ export default function Home() {
           {/* About */}
           <p className="space-y-4">
             <span className="relative block">
-              I am a Solutions Architect and Full-Stack Engineer specializing in
-              AI-powered applications and scalable web platforms.
+              Hi, I&apos;m Matt. I&apos;m a Solutions Architect and Full-Stack
+              Engineer who has been building for the web since 2013.
             </span>
 
             <span className="block">
-              Currently, I work as a Solutions Architect where I focus on
-              architecting high-performance applications, optimizing front-end
-              experiences, and integrating AI-driven solutions for large-scale
-              platforms.
+              I specialize in architecting high-performance applications,
+              crafting polished front-end experiences, and integrating AI-driven
+              solutions for platforms that serve millions of users.
             </span>
 
             <span className="block">
-              Outside of work, I enjoy learning about emerging AI technologies,
-              optimizing web performance, and contributing to open-source
-              projects.
+              The &quot;right&quot; way to solve a problem is constantly
+              evolving. There are always new techniques to discover and new
+              voices to learn from. Taking pride in my work has committed me to
+              the philosophy of life-long learning.
             </span>
           </p>
 
@@ -46,6 +46,7 @@ export default function Home() {
               <Experience
                 key={exp.slug}
                 name={exp.company}
+                role={exp.role}
                 period={{
                   start: new Date(exp.startDate).getFullYear().toString(),
                   end: exp.current
