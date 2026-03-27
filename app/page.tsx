@@ -4,11 +4,12 @@ import { Section } from '@/components/section';
 import Social from '@/components/social';
 import Link from 'next/link';
 import { Footer } from '@/components/footer';
-import { getProjects, getExperiences } from '@/lib/content';
+import { getProjects, getExperiences, getPosts } from '@/lib/content';
 
 export default function Home() {
   const projects = getProjects();
   const experiences = getExperiences();
+  const posts = getPosts();
 
   return (
     <>
@@ -76,6 +77,36 @@ export default function Home() {
                 slug={project.slug}
               />
             ))}
+          </Section>
+
+          {/* Blog */}
+          <Section title="Blog">
+            {posts.length > 0 ? (
+              <>
+                <article className="flex flex-col gap-0.5">
+                  <div className="flex flex-row items-center gap-2">
+                    <Link
+                      href={`/blog/${posts[0].slug}`}
+                      className="relative shrink-0 pr-3 font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-[calc(100%-12px)] after:origin-bottom-right after:scale-x-0 after:bg-accent-pop after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:text-accent-pop hover:after:origin-bottom-left hover:after:scale-x-100"
+                    >
+                      {posts[0].title}
+                    </Link>
+                  </div>
+                  <p className="text-secondary-foreground">
+                    {posts[0].description}
+                  </p>
+                </article>
+                <Link
+                  href="/blog"
+                  className="text-muted-foreground hover:text-accent-pop text-sm transition-colors"
+                >
+                  View all {posts.length}{' '}
+                  {posts.length === 1 ? 'article' : 'articles'}
+                </Link>
+              </>
+            ) : (
+              <p className="text-muted-foreground">Coming soon.</p>
+            )}
           </Section>
 
           {/* Contact */}
