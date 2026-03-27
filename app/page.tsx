@@ -83,14 +83,12 @@ export default function Home() {
           <Section title="Blog">
             {posts.length > 0 ? (
               <>
-                <article className="flex flex-col gap-0.5">
-                  <span className="shrink-0 font-medium">
-                    {posts[0].title}
-                  </span>
-                  <p className="text-secondary-foreground">
-                    {posts[0].description}
-                  </p>
-                </article>
+                <Link
+                  href={`/blog/${posts[0].slug}`}
+                  className="relative w-fit font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-accent-pop after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:text-accent-pop hover:after:origin-bottom-left hover:after:scale-x-100"
+                >
+                  {posts[0].title}
+                </Link>
                 <Link
                   href="/blog"
                   className="text-muted-foreground hover:text-accent-pop text-sm transition-colors"
