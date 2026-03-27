@@ -4,11 +4,12 @@ import { Section } from '@/components/section';
 import Social from '@/components/social';
 import Link from 'next/link';
 import { Footer } from '@/components/footer';
-import { getProjects, getExperiences } from '@/lib/content';
+import { getProjects, getExperiences, getPosts } from '@/lib/content';
 
 export default function Home() {
   const projects = getProjects();
   const experiences = getExperiences();
+  const posts = getPosts();
 
   return (
     <>
@@ -76,6 +77,31 @@ export default function Home() {
                 slug={project.slug}
               />
             ))}
+          </Section>
+
+          {/* Blog */}
+          <Section title="Blog">
+            {posts.length > 0 ? (
+              <>
+                <article className="flex flex-col gap-0.5">
+                  <span className="shrink-0 font-medium">
+                    {posts[0].title}
+                  </span>
+                  <p className="text-secondary-foreground">
+                    {posts[0].description}
+                  </p>
+                </article>
+                <Link
+                  href="/blog"
+                  className="text-muted-foreground hover:text-accent-pop text-sm transition-colors"
+                >
+                  View all {posts.length}{' '}
+                  {posts.length === 1 ? 'article' : 'articles'}
+                </Link>
+              </>
+            ) : (
+              <p className="text-muted-foreground">Coming soon.</p>
+            )}
           </Section>
 
           {/* Contact */}
