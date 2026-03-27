@@ -2,9 +2,11 @@ import {
   allProjects,
   allExperiences,
   allCrafts,
+  allPosts,
   Project,
   Experience,
   Craft,
+  Post,
 } from 'contentlayer/generated';
 
 export function getProjects(): Project[] {
@@ -23,4 +25,12 @@ export function getCrafts(): Craft[] {
   return allCrafts.sort((a: Craft, b: Craft) => {
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
+}
+
+export function getPosts(): Post[] {
+  return allPosts
+    .filter((post: Post) => post.published)
+    .sort((a: Post, b: Post) => {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
 }
