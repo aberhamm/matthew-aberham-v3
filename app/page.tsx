@@ -17,6 +17,14 @@ export default function Home() {
           <Link href="/">
             <h1 className="text-xl font-semibold">Matthew Aberham</h1>
           </Link>
+          <nav>
+            <Link
+              href="/blog"
+              className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+            >
+              Blog
+            </Link>
+          </nav>
         </header>
         <main className="mt-20 mb-2 flex h-full w-full flex-col gap-12 sm:mb-0">
           {/* About */}
