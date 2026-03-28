@@ -11,6 +11,19 @@ interface PostPageProps {
   }>;
 }
 
+function getRelatedPosts(currentSlug: string, currentTags: string[] = []) {
+  return allPosts
+    .filter((p) => p.published && p.slug !== currentSlug)
+    .map((p) => ({
+      ...p,
+      relevance: p.tags
+        ? p.tags.filter((t) => currentTags.includes(t)).length
+        : 0,
+    }))
+    .sort((a, b) => b.relevance - a.relevance || new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 3);
+}
+
 export async function generateStaticParams() {
   return allPosts
     .filter((post) => post.published)
@@ -51,6 +64,8 @@ export default async function PostPage({
     notFound();
   }
 
+  const relatedPosts = getRelatedPosts(post.slug, post.tags || []);
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-20">
       <Link
@@ -63,7 +78,7 @@ export default async function PostPage({
 
       <article>
         <header className="mb-8">
-          <h1 className="mb-2 text-3xl font-bold">{post.title}</h1>
+          <h1 className="mb-3 text-3xl font-bold">{post.title}</h1>
           <div className="flex flex-row items-center gap-3">
             <time
               dateTime={post.date}
@@ -89,8 +104,69 @@ export default async function PostPage({
             )}
           </div>
         </header>
+
         <MDXContent code={post.body.code} />
       </article>
+
+      {/* Author Footer */}
+      <footer className="border-border mt-16 border-t pt-8">
+        <div className="flex items-start gap-4">
+          <div>
+            <p className="font-semibold">Matthew Aberham</p>
+            <p className="text-muted-foreground mt-1 text-sm">
+              Software engineer and consultant at Perficient. Writing about AI
+              developer tooling, infrastructure, and security.
+            </p>
+          </div>
+        </div>
+      </footer>
+
+      {/* Related Posts */}
+      {relatedPosts.length > 0 && (
+        <section className="mt-12">
+          <h2 className="mb-6 text-xl font-semibold">Read More</h2>
+          <div className="flex flex-col gap-4">
+            {relatedPosts.map((related) => (
+              <Link
+                key={related.slug}
+                href={`/blog/${related.slug}`}
+                className="group border-border hover:border-muted-foreground/30 rounded-lg border p-4 transition-colors"
+              >
+                <p className="group-hover:text-accent-pop font-medium transition-colors">
+                  {related.title}
+                </p>
+                <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
+                  {related.description}
+                </p>
+                <div className="mt-2 flex items-center gap-2">
+                  <time
+                    dateTime={related.date}
+                    className="text-muted-foreground text-xs"
+                  >
+                    {new Date(related.date).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </time>
+                  {related.tags && related.tags.length > 0 && (
+                    <div className="flex gap-1">
+                      {related.tags.slice(0, 2).map((tag) => (
+                        <span
+                          key={tag}
+                          className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-xs"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
