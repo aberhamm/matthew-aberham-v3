@@ -1,0 +1,54 @@
+---
+title: "What AI Agent Adoption Actually Looks Like: China's OpenClaw Craze"
+description: "OpenClaw surpassed React as GitHub's most-starred project. In China it became a cultural phenomenon, then got banned from government devices. 20% of its skills were malicious. Here's what enterprise teams should learn."
+date: 2026-03-27
+published: true
+tags: ['AI', 'Security', 'Agents']
+---
+
+![Shanghai skyline at dusk, representing China's rapid AI adoption](/posts/14_china_neon_technology.jpg)
+
+**Date:** March 2026
+**Sources:** [CNBC](https://www.cnbc.com/2026/03/18/china-openclaw-baidu-tencent-ai.html), [MIT Technology Review](https://www.technologyreview.com/2026/03/11/1134179/china-openclaw-gold-rush/), [Bloomberg](https://www.bloomberg.com/news/articles/2026-03-11/china-moves-to-limit-use-of-openclaw-ai-at-banks-government-agencies)
+
+I've been following the OpenClaw story for a few weeks now, and I think it's the most useful case study in AI agent adoption we've gotten so far. Not because of the technology itself, but because of how fast things moved and what broke along the way.
+
+## From GitHub to Grandma's Phone
+
+OpenClaw is an open-source AI agent framework that connects to more than 20 messaging platforms. Users spin up autonomous agents that book appointments, manage schedules, summarize conversations, and extend themselves with community-built skills from a public registry. That description fits dozens of agent frameworks. What makes OpenClaw different is what actually happened next.
+
+Within 60 days of launch, it surpassed React as the most-starred project on GitHub, clearing 250,000 stars. Jensen Huang called it "the next ChatGPT." But the real story wasn't on GitHub. It was in China.
+
+OpenClaw's mascot is a lobster, and setting up a personal AI agent became known as "raising a lobster." The phrase went everywhere. Schoolkids were doing it. Office workers were doing it. Grandparents were asking their grandchildren for help doing it.
+
+Tencent held setup events with 500-plus attendees, complete with plush lobster toys and step-by-step walkthroughs. The framework got integrated into WeChat, giving it a runway to over a billion users. Engineers started charging 520 yuan (about $72) for on-site installation at people's homes. JD.com sold remote setup services. Local governments launched subsidies and designated "lobster service zones." MIT Technology Review called it a gold rush, and that feels about right.
+
+This wasn't a developer tool anymore. It was a consumer movement.
+
+## Then the Ban
+
+Then reality showed up.
+
+Chinese government agencies banned OpenClaw from internal use. State-owned banks followed. China's national Computer Emergency Response Team published an assessment describing the framework's default security posture as "extremely weak." The worst finding: roughly 20 percent of the skills in OpenClaw's public registry were malicious.
+
+One in five.
+
+Millions of non-technical users had installed an agent framework with system-level access to their devices and messaging platforms, then extended it with community-built plugins, a fifth of which were designed to do harm. The attack surface wasn't theoretical. It was live, at scale, and growing every day.
+
+## A Pattern We Keep Seeing
+
+If you work in software security, this should feel familiar. We've been watching the same dynamics in the Western AI ecosystem, just slower and smaller.
+
+The Model Context Protocol (MCP) accumulated 30 reported CVEs within its first 60 days. The GlassWorm campaign showed that malicious VS Code extensions could exploit AI coding assistants to silently exfiltrate source code and credentials. The TeamPCP supply chain attack targeted a popular MCP server package, injecting backdoors into developer environments through a tool developers had explicitly chosen to trust.
+
+The thread connecting all of these is straightforward: AI tools with system access plus untrusted content equals an attack surface we don't fully understand yet.
+
+## Why This Matters for Developers
+
+I don't think OpenClaw in China is just a quirky international tech story. I think it's a compressed preview of what's coming to every enterprise environment.
+
+The same dynamics that drove "lobster raising" to mass adoption are already present in your org. Employees want AI agents. They will install them whether IT approves or not. Shadow AI is the new shadow IT, except the tools have broader system access and deeper integration with sensitive workflows than a rogue SaaS subscription ever did.
+
+So the questions I keep coming back to: What does your agent vetting process look like today? If your agents pull capabilities from external registries, how are those sources evaluated? Who owns AI agent security at your organization? Because if no one owns it explicitly, no one owns it at all.
+
+The question isn't whether your team will adopt AI agents. That's already happening. The question is whether the security infrastructure will be ready when adoption accelerates.

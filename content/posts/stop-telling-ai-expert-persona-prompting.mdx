@@ -1,0 +1,62 @@
+---
+title: "Stop Telling Your AI It's an Expert: Here's What to Do Instead"
+description: "USC researchers found that persona prompting ('You are an expert') hurts factual accuracy while helping style tasks. Here's the data and what to do instead."
+date: 2026-03-27
+published: true
+tags: ['AI', 'Prompting', 'Research']
+---
+
+![A robot contemplating its own expertise, surrounded by conflicting signals](/posts/11_persona_prompting_expert.jpg)
+
+**Date:** March 24, 2026
+**Source:** [arXiv: 2603.18507](https://arxiv.org/abs/2603.18507)
+
+"You are an expert software engineer." "You are a world-class data scientist." "You are a senior Sitecore developer with 15 years of experience."
+
+I do this. You probably do too. Every prompt engineering guide says to do it. But a recent paper from USC shows that persona prompting actively makes your AI less accurate on the tasks where accuracy matters most.
+
+## What the Research Found
+
+A team at USC (Zizhao Hu, Mohammad Rostami, and Jesse Thomason) systematically tested what happens when you assign expert personas to large language models across knowledge benchmarks, safety tasks, and reasoning problems.
+
+On MMLU, a standard knowledge benchmark, accuracy dropped from **71.6% with no persona to 68.0% with a minimal persona** like "You are an expert." Add a detailed persona with backstory and credentials? It fell to **66.3%**. That is a meaningful decline, the kind that turns correct answers into wrong ones across hundreds of queries a day.
+
+Math performance was worse. Scores went from **9 out of 10 to 1.5 out of 10** when a "math expert" persona was applied. The model went from near-perfect to nearly useless because you told it to act like an expert mathematician.
+
+Here is the interesting part: persona prompting was not universally bad. A safety-oriented persona improved jailbreak refusal rates by **+17.7 percentage points**. Personas are not broken. They are being used for the wrong things.
+
+## Why This Happens
+
+The core insight: **persona prompting is a style amplifier, not a knowledge amplifier.**
+
+When you tell a model "You are an expert in X," you are not unlocking hidden expert-level knowledge. The model already has access to everything it was trained on. What you are actually doing is activating a behavioral mode: "sound like an expert." The model starts prioritizing confident, authoritative language. It hedges less. It uses more domain jargon.
+
+That confident style competes directly with factual retrieval. The model optimizes for being accurate and sounding like an expert simultaneously, and when those conflict, style often wins. You get answers that sound convincing and are wrong.
+
+Think of it like telling someone to "act like a world-class surgeon" during trivia night. They would not answer more questions correctly. They would speak more confidently, use more medical terminology, and double down on wrong answers instead of saying "I'm not sure."
+
+## What to Do Instead
+
+Replace identity with instructions. **Tell the model what to do and how, not who to be.**
+
+**Sitecore development:**
+- Before: *"You are an expert Sitecore developer."*
+- After: *"Use the Sitecore XM Cloud documentation. Return exact property names and config paths."*
+
+**TypeScript engineering:**
+- Before: *"You are a senior TypeScript engineer."*
+- After: *"Use TypeScript strict mode. Follow our ESLint config. Prefer interface over type for public APIs."*
+
+**Code review:**
+- Before: *"You are an expert code reviewer."*
+- After: *"Review this diff for: broken access control, missing auth on new endpoints, hardcoded secrets, and race conditions."*
+
+Every "after" prompt gives the model something concrete to execute against. There is no ambiguity about what "expert-level" means because you have defined the actual criteria.
+
+Keep personas for style tasks (tone, formatting, audience adaptation, safety guardrails). Drop them for knowledge tasks (code, config, facts, math) and use specific constraints instead.
+
+## Why This Matters for Developers
+
+Open your prompt templates, your system prompts, your cursor rules. Find every "You are an expert" or "You are a senior" or "You are a world-class" anything. For each one, ask: am I asking for a style or for knowledge?
+
+If it is style, keep the persona. If it is knowledge, replace it with specific instructions about what the model should actually do. **Constraints over characters, instructions over identities.** As models get smarter about routing persona behavior internally, this distinction will matter less. Until then, being deliberate about it is the difference between an AI that sounds right and one that is right.

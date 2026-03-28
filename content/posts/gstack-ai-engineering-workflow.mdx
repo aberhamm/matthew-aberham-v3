@@ -1,0 +1,52 @@
+---
+title: "How the YC CEO Structured an AI Engineering Workflow: What You Can Learn From It"
+description: "Garry Tan open-sourced 28 Claude Code skills that simulate a virtual engineering team. The interesting part isn't the skills, it's the pipeline structure. Here's the pattern you can steal."
+date: 2026-03-27
+published: true
+tags: ['AI', 'Developer Tools', 'Engineering']
+---
+
+![Team planning session with structured workflow on a whiteboard](/posts/15_engineering_workflow.jpg)
+
+**Date:** March 11, 2026
+**Source:** [gstack on GitHub](https://github.com/gstack-com/gstack)
+
+Y Combinator CEO Garry Tan open-sourced **gstack**, a collection of 28 Claude Code skills that simulate a virtual engineering team. It hit 49,000 GitHub stars in 15 days. That kind of traction tells you something struck a nerve.
+
+I think the interesting part isn't the skills themselves. It's the pipeline structure underneath them. Tan didn't build a Swiss Army knife prompt. He built a sequential workflow where each role is a specialized AI agent with a narrow mandate and strict handoff points. That structure is worth studying whether you ever touch gstack or not.
+
+## The Shape of the Pipeline
+
+Each skill acts as a specialist role: CEO, engineering manager, designer, QA engineer, security officer. They chain together in a deliberate sequence:
+
+**Think -> Plan -> Build -> Review -> Test -> Ship -> Reflect**
+
+No single skill tries to do everything. Each one validates its output and passes a structured artifact to the next step. The core insight here is not about AI writing code faster. It's about AI checking its own work through sequential, adversarial review.
+
+## The Planning Pipeline: Three Angles Before a Line of Code
+
+The planning phase is where gstack gets genuinely interesting. Three skills run in sequence, each stress-testing the plan from a different angle.
+
+**`/office-hours`: Idea Validation.** This skill plays a startup advisor running diagnostics on your idea. It asks six pointed questions, and the first one matters most: *"Name the actual human who needs this."* I think that question alone filters out a surprising amount of speculative work. If you can't name a real person or scenario, the skill catches the vague answer and pushes back.
+
+**`/plan-ceo-review`: Scope Challenge.** Once an idea passes validation, a CEO-perspective review challenges the scope. It operates in four modes: Scope Expansion, Selective Expansion, Hold Scope, and Scope Reduction. The driving question isn't "can we build this?" but *"is this ambitious enough?"* If you've watched a promising feature get quietly trimmed in sprint planning, you know what I mean.
+
+**`/plan-eng-review`: Architecture Lock-In.** The engineering review walks through data flow, edge cases, test coverage, and performance characteristics. It produces diagrams.
+
+Here's the key design choice: these three steps run *sequentially*. Each output feeds the next. By the time you start writing code, the plan has been stress-tested from three distinct angles: user need, business ambition, and technical feasibility. That's not AI replacing your planning meetings. That's AI enforcing the discipline most teams skip when they're moving fast.
+
+## The Execution Pipeline
+
+The build-and-ship side follows the same principle. `/review` runs multi-pass code review with a cross-model check using Codex to catch blind spots a single model might miss. `/qa` launches Playwright-based browser testing with an auto-fix loop and a "WTF score" that flags when automated fixes are getting hacky rather than solving the problem. `/ship` orchestrates a 19-phase deployment process with what Tan calls the "Iron Law": if any code changes after the test pass, tests must re-run before deploy. No exceptions.
+
+One practical note: gstack works across Claude Code, Codex CLI, Gemini CLI, and Cursor through a `SKILL.md` standard. Skills are markdown files, not vendor-specific plugins. The workflow pattern is portable.
+
+## Why This Matters for Developers
+
+You don't need gstack to apply this pattern. The underlying principle works with any AI coding tool:
+
+**Don't ask one AI to do everything. Chain specialized prompts through a pipeline where each step validates the last.**
+
+Decompose by role, not by task. Make the pipeline sequential and adversarial, where each step challenges the previous output rather than extending it. Define structured handoff artifacts between steps. Build in self-regulation so the pipeline can detect when it's going off the rails. And enforce the Iron Law: if anything changes after validation, re-validate. No shortcuts.
+
+The teams getting the most out of AI coding tools right now aren't the ones with the best single prompts. They're the ones building systems where AI agents check each other's work. The tooling will keep changing. The structure will hold.

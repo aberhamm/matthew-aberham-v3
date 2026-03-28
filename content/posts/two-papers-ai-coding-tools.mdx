@@ -1,0 +1,52 @@
+---
+title: "Two Papers That Should Change How Your Team Uses AI Coding Tools"
+description: "One paper shows 75% of AI agents break working code during maintenance. The other shows copy-pasting 7 layers in an old model topped the leaderboard. Together they say: we're building faster than we understand."
+date: 2026-03-27
+published: true
+tags: ['AI', 'Research', 'Developer Tools']
+---
+
+![Neural network layers visualized as a processing stack](/posts/12_neural_network_layers.jpg)
+
+**Date:** March 2026
+**Sources:** [SWE-CI (arXiv 2603.03823)](https://arxiv.org/abs/2603.03823), [RYS by David Noel Ng](https://dnhkng.github.io/posts/rys/)
+
+Two research papers came out in early March 2026. One shows that most AI coding agents quietly break your codebase over time. The other shows that duplicating a handful of layers inside a model, with no training at all, topped a global benchmark. Together they point to the same thing: we are building on top of these tools faster than we understand them.
+
+## Paper 1: Your AI Agent Is Probably Undoing Its Own Work
+
+Most AI coding benchmarks work like a job interview. Hand the model a bug, ask for a patch, check if the tests pass. That is useful, but it measures something very different from what software teams actually do.
+
+Alibaba's SWE-CI benchmark tries to close that gap. Each task simulates 233 days of real development across 71 consecutive commits. The agent fixes one thing, then another, then another, all in the same codebase, without undoing its earlier work. That is maintenance. That is the job.
+
+The results are not great. 75% of the models tested broke previously working code during these maintenance sequences, even when their initial patches passed all tests. The agent fixes bug A on Monday, fixes bug B on Wednesday, and silently reintroduces bug A in the process. If you have worked on a real team, you know exactly how that feels.
+
+Only one model stayed above a 50% zero-regression rate. These are not obscure research models. These are the agents teams are plugging into CI pipelines right now.
+
+The point is not that AI coding tools are useless. The point is that there is a massive gap between "can fix this bug" and "can maintain this codebase." Most teams are evaluating with the first question when they should be asking the second.
+
+## Paper 2: Copy-Paste Engineering Beats Billions in Training Compute
+
+On March 10, researcher David Noel Ng published a technique called RYS (Repeat Your Steps) layer duplication.
+
+You can think of an LLM as a stack of processing layers. Your input goes in at the top, passes through each layer in sequence, and the output comes out the bottom. Each layer transforms the data a little bit more. A 72 billion parameter model might have 80 of these layers stacked on top of each other. What this researcher did was find seven layers in the middle of that stack and just copy and paste them. That's it. The data now passes through those seven layers twice instead of once. No retraining, no new data, no weight changes, just a structural copy and paste that took minutes. The result was number one on HuggingFace's open LLM leaderboard. An old model beat current state-of-the-art models that cost millions to train, and that's pretty important.
+
+The improvements were not marginal. MuSR reasoning jumped 17.7%. Math performance improved 8.2%. Independent researchers applied the same technique to Devstral-24B and watched its logical deduction score go from 0.22 to 0.76.
+
+The working theory is that transformer models develop "reasoning circuits" in their middle layers that function almost like a loop. Duplicate them, and the model gets a second pass through the same circuit. The representations refine further. The answer gets better.
+
+We built these models, and we did not know this was possible. Billions in training compute, months of RLHF tuning, and you can meaningfully improve reasoning by copying seven layers in a config file. That is not a minor gap in our understanding.
+
+## Why This Matters for Developers
+
+These papers point in the same direction. That is not a reason to stop using AI tools. It is a reason to be honest about where we are.
+
+**Test for maintenance, not just generation.** Stop evaluating AI coding tools on whether they can produce a correct patch. Evaluate whether they can produce ten patches in sequence without breaking earlier work.
+
+**Keep humans in the regression loop.** AI agents are particularly bad at understanding downstream effects of their changes. Reviewers should look not just at what changed, but at what might have been affected.
+
+**Strengthen your test suite before you scale AI contributions.** If 75% of agents break previously working code, your safety net is test coverage. Before you increase AI throughput, increase your confidence in catching regressions.
+
+**Stay skeptical of benchmarks.** Model capabilities are more contingent and less understood than leaderboard rankings suggest. Evaluate tools based on your codebase, your workflows, your regression rates.
+
+The research will keep coming. The question is whether your team's practices keep up with what it reveals.

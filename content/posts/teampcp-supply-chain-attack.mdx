@@ -1,0 +1,51 @@
+---
+title: "Your Security Scanner Got Hacked: The TeamPCP Supply Chain Attack"
+description: "A single threat actor compromised Trivy, Checkmarx, and LiteLLM in one week. Two of the three targets were security scanners. Here's what happened and what to do about it."
+date: 2026-03-27
+published: true
+tags: ['Security', 'Developer Tools', 'Supply Chain']
+---
+
+![Supply chain security concept showing interconnected software dependencies](/posts/13_supply_chain_security.jpg)
+
+**Date:** March 19-24, 2026
+**Sources:** [Arctic Wolf](https://arcticwolf.com/resources/blog/teampcp-supply-chain-attack-campaign-targets-trivy-checkmarx-kics-and-litellm-potential-downstream-impact-to-additional-projects/), [Microsoft](https://www.microsoft.com/en-us/security/blog/2026/03/24/detecting-investigating-defending-against-trivy-supply-chain-compromise/), [Snyk](https://snyk.io/articles/poisoned-security-scanner-backdooring-litellm/)
+
+The tools you trust to find vulnerabilities just became the vulnerability. Between March 19 and 24, a threat actor called **TeamPCP** compromised Aqua Security's Trivy, Checkmarx KICS, and the LiteLLM AI proxy library in a single coordinated campaign. Two of those three targets are security scanners. It is like finding out your locksmith has been copying your keys.
+
+## The Attack Chain
+
+**Trivy (March 19).** TeamPCP submitted a pull request to Trivy's GitHub repo. Trivy's CI pipeline used the `pull_request_target` trigger instead of the safer `pull_request` trigger. That one misconfiguration gave the attacker's workflow full access to the repository's CI/CD secrets, including publishing tokens and cross-project credentials. They grabbed the secrets and moved on.
+
+**Checkmarx KICS (March 20-21).** Using stolen credentials from Trivy's CI environment, TeamPCP pivoted to Checkmarx's KICS repository. Shared or linked secrets gave them a foothold to compromise KICS's build pipeline too, widening the blast radius across two major security vendors.
+
+**LiteLLM (March 22-24).** The final target was LiteLLM, an open-source AI proxy library with roughly 97 million monthly downloads used by organizations including Stripe, Netflix, and Google. TeamPCP pushed poisoned versions 1.82.7 and 1.82.8 to PyPI. Those packages were live for over two hours. At LiteLLM's download volume, that window was more than enough to reach thousands of environments.
+
+The malicious payload harvested SSH private keys, cloud provider credentials (AWS, GCP, Azure), Kubernetes secrets, database connection strings, and environment variables. Everything was exfiltrated to attacker-controlled infrastructure. This incident has been assigned **CVE-2026-33634**.
+
+## Why This One Matters
+
+Supply chain attacks are not new. What makes this one worth paying attention to is the target selection. Trivy and KICS run in CI/CD pipelines with elevated permissions because they need to scan infrastructure, container images, and codebases. That privilege is exactly what made them high-value targets.
+
+When your vulnerability scanner is compromised, it does not just fail to find problems. It becomes the problem, running with the permissions you gave it to protect you.
+
+## The Root Cause
+
+The initial entry point was a well-documented but persistently misunderstood GitHub Actions footgun: `pull_request_target`. The `pull_request` trigger runs workflow code from a PR's fork in a restricted context with no access to repository secrets. The `pull_request_target` trigger runs in the context of the base repository with full access to secrets. When a workflow triggered by `pull_request_target` checks out and executes code from the PR branch, it hands external contributors the keys to the kingdom.
+
+I do this audit on my own repos periodically, and I would bet most teams do not. Trivy's pipeline made exactly this mistake. One YAML line opened the door to a three-stage attack across multiple organizations.
+
+## What to Do Right Now
+
+- [ ] **Check LiteLLM versions.** Run `pip show litellm` everywhere. If you find version 1.82.7 or 1.82.8, treat the host as compromised. Rotate every credential accessible from that machine.
+- [ ] **Pin and verify dependencies.** Pin to a known-good LiteLLM version (1.82.6 or latest patched release) and verify checksums against PyPI's published hashes.
+- [ ] **Rotate secrets exposed to Trivy and KICS pipelines.** If your CI/CD pipelines pass cloud credentials, registry tokens, or signing keys to these tools, rotate them now.
+- [ ] **Audit every workflow for `pull_request_target`.** Search your repos: `grep -r "pull_request_target" .github/workflows/`. If any workflow checks out PR code in that context, it is vulnerable.
+- [ ] **Scope CI/CD secrets to specific jobs and environments.** Use GitHub's environment protection rules and required reviewers for workflows that access production credentials.
+- [ ] **Review cloud audit trails.** Look for credential usage from unfamiliar IP ranges in AWS CloudTrail, GCP Audit Logs, or Azure Activity Logs between March 19 and today.
+
+## Looking Forward
+
+TeamPCP did not find a zero-day. They found a misconfiguration that has been publicly documented for years. The fix is not exotic. It is discipline. Review your workflow triggers, scope your permissions, and treat your CI/CD pipeline configuration with the same rigor you apply to production code.
+
+The next TeamPCP will not use the same entry point, but they will look for the same pattern: a privileged context that nobody bothered to audit. Go run the checklist.
