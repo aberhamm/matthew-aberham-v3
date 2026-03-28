@@ -1,0 +1,22 @@
+---
+title: "Anthropic Accuses DeepSeek and Others of Distillation Attacks on Claude"
+description: "Anthropic reveals industrial-scale distillation attacks by three Chinese AI labs, creating 24,000+ fraudulent accounts and 16 million exchanges to extract Claude's capabilities."
+date: 2026-02-26
+published: true
+tags: ['AI', 'Security', 'Geopolitics']
+---
+
+![Anthropic distillation attack detection report](/posts/10_anthropic_distillation_attack.jpg)
+
+**Date:** February 23, 2026
+**Source:** [Anthropic Blog](https://www.anthropic.com/news/detecting-and-preventing-distillation-attacks)
+
+Anthropic published a detailed post revealing what it calls a distillation attack at industrial scale, accusing three Chinese AI labs (DeepSeek, Moonshot AI/Kimi, and MiniMax) of systematically extracting Claude's capabilities. According to Anthropic, the labs created over 24,000 fraudulent accounts and generated more than 16 million exchanges with Claude to train and improve their own models.
+
+The post describes the detection methodology, the countermeasures Anthropic has deployed, and the broader policy implications. The accusation has generated wide coverage and debate, with some commentators pointing out that the line between "distillation" and "using a competitor's product for research" is legally and technically contested. The irony is hard to miss: the major AI labs, Anthropic included, have themselves trained their models on vast amounts of copyrighted information from the open web.
+
+## Why This Matters for Developers
+
+Here is a threat model most developers have not had to think about before: automated, high-volume extraction of a model's capabilities through API abuse. If you are building your own models, fine-tuning on outputs from frontier models, or offering AI-powered APIs, this type of distillation attack is now a real intellectual property and security risk you need to account for.
+
+On the practical side, expect tighter enforcement from AI providers. Rate limiting, behavioral anomaly detection, and terms-of-service policing are all getting more aggressive. If your legitimate workloads involve high-volume API calls or automated pipelines that interact with third-party models, make sure your usage patterns do not look like distillation. Clear documentation, reasonable rate patterns, and proactive communication with your providers will matter more going forward.

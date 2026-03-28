@@ -1,0 +1,22 @@
+---
+title: "vLLM v0.16.0: Throughput Scheduling and a WebSocket Realtime API"
+description: "vLLM v0.16.0 adds a WebSocket Realtime API for voice-enabled agents, async scheduling for higher throughput, and speculative decoding improvements."
+date: 2026-02-26
+published: true
+tags: ['AI', 'Infrastructure', 'Open Source']
+---
+
+![vLLM Realtime API and v0.16.0 release highlights](/posts/07_vllm_v016_realtime.png)
+
+**Date:** February 24, 2026
+**Source:** [vLLM Release Notes](https://github.com/vllm-project/vllm/releases/tag/v0.16.0)
+
+vLLM is an open-source library for large language model inference and serving, originally developed at UC Berkeley's Sky Computing Lab. It has become the standard for self-hosted, high-throughput LLM inference because of its performance and memory efficiency. Its core innovation is PagedAttention, a memory management technique that lets it serve multiple concurrent requests with far higher throughput than traditional methods.
+
+The v0.16.0 release introduces full support for async scheduling with pipeline parallelism, delivering strong improvements in end-to-end throughput and time-per-output-token. The headline feature is a WebSocket-based Realtime API for streaming audio interactions, mirroring the OpenAI Realtime API interface and built for voice-enabled agent applications. The release also includes speculative decoding improvements, structured output enhancements, and multiple serving and RLHF workflow capabilities.
+
+## Why This Matters for Developers
+
+If you run models on your own infrastructure for cost, privacy, or latency reasons, this release directly affects your serving stack. The Realtime API gives you a self-hosted alternative to OpenAI's Realtime API with the same interface, so existing client code can point at a vLLM instance with minimal changes. That removes a hard dependency on OpenAI for voice-enabled web applications.
+
+On the throughput side, the async scheduling improvements mean high-concurrency workloads will see better performance without additional hardware. More throughput on the same GPUs translates directly to lower cost per request.

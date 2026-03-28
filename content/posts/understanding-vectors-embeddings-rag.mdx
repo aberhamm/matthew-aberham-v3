@@ -1,0 +1,61 @@
+---
+title: "Understanding Vectors, Embeddings, and RAG for Smarter Search"
+description: "A practical guide to vector search, embeddings, similarity metrics, vector indexes, and Retrieval-Augmented Generation (RAG) for developers building semantic search systems."
+date: 2025-06-01
+published: true
+tags: ['AI', 'Engineering', 'Tutorial']
+---
+
+![Vector embeddings and RAG architecture](/posts/chatbot_rag.jpg)
+
+Traditional search engines and databases match based on keywords. These systems are fine when you're looking for an exact or partial string match but fail when the goal is to find content that's _conceptually similar_, not just _textually identical_.
+
+**Vector search** bridges this gap by representing content like text, images, or even audio as coordinates in a multidimensional space grouped by likeness, letting us compare meaning instead of exact terms. When paired with tools like **vector indexes** and **Retrieval-Augmented Generation (RAG)**, this unlocks smarter, faster, and more scalable search systems.
+
+## Vector Databases
+
+A **vector database** is a data store designed to keep each piece of unstructured content (text, images, audio, user events) as a high-dimensional numeric vector and retrieve the items whose vectors are closest to a query vector. Because distance in this space reflects semantic similarity, these systems let you search by meaning ("forgot login credentials") instead of exact wording or IDs.
+
+This similarity-first model unlocks capabilities that conventional databases struggle with: grounding LLM chatbots in private documents (RAG), recommending products based on behavior, and finding visually similar assets in massive libraries.
+
+## Embeddings
+
+An **embedding** is a list of numbers that represents the _meaning_ of a thing in a way a computer can understand. Think of it like GPS coordinates in a space where "similar ideas" are physically closer together.
+
+For example, "reset my password" and "forgot login credentials" might both get mapped to nearby points in this space, even though they use different words. A modern embedding model (e.g., OpenAI _text-embedding-3-small_) converts a sentence into a 1,536-dimensional vector. More dimensions means more nuance, but also more storage and compute.
+
+```
+"car" → [0.2, 0.5, -0.1, 0.8, ...]
+"vehicle" → [0.3, 0.4, -0.2, 0.7, ...]
+"banana" → [-0.1, 0.6, 0.2, 0.3, ...]
+```
+
+## Measuring Similarity
+
+**Cosine Similarity** calculates how closely two vectors point in the same direction, ignoring their length. Use it when you care about semantic meaning, not word count or vector size. This is the standard for text embeddings.
+
+**Euclidean Distance** tells you how far apart two points are in space. Best for image or pixel-based embeddings.
+
+## Vector Indexing
+
+A vector index arranges embeddings so that similar items are grouped together, using **approximate nearest neighbor (ANN)** algorithms instead of scanning everything.
+
+**HNSW (Hierarchical Navigable Small World):** Builds a multi-layer network of vectors. Top layers contain fewer, more general vectors; bottom layer contains all of them. High performance, low latency.
+
+**IVF (Inverted File):** Groups vectors into buckets, then only checks the most likely buckets during search. Good for large datasets.
+
+**MSTG (Multi-Scale Tree Graph):** A newer, memory-efficient method that builds multiple levels of smaller clusters. Combines tree and graph benefits.
+
+## Retrieval-Augmented Generation (RAG)
+
+Traditional language models generate answers based only on training data, which can be outdated. **RAG** combines language generation with live data retrieval. The system searches a knowledge base and uses that content to produce more accurate, context-grounded responses, reducing hallucinations and allowing instant updates without fine-tuning.
+
+When a user submits a query, the system first searches a knowledge base for relevant content. That retrieved information is then passed into the language model, helping it generate a response that's both more accurate and better grounded in real-world context.
+
+Confining the LLM to specific documents reduces hallucinations and lets the knowledge base update instantly with no fine-tuning required.
+
+## What's Next
+
+These are the core building blocks behind modern semantic search. In the next part, we'll move from theory to practice by building a RAG foundation with Postgres, pgVector, and TypeScript scripts for embedding, chunking, and querying your data.
+
+**Repository:** [rag-chatbot-demo on GitHub](https://github.com/aberhamm/rag-chatbot-demo)

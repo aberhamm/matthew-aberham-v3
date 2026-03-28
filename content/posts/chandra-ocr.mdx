@@ -1,0 +1,34 @@
+---
+title: "Chandra OCR: The New Gold Standard in Open-Source Document Parsing"
+description: "Datalab's Chandra OCR scores 83.1% on the olmOCR benchmark, beating GPT-4o and Gemini. Full-page decoding with layout-aware output in Markdown, HTML, or JSON."
+date: 2025-11-13
+published: true
+tags: ['AI', 'Open Source', 'Developer Tools']
+---
+
+![Chandra OCR document parsing](/posts/chandra_ocr.jpg)
+
+**Date:** October 2025
+**Sources:** [Datalab Blog](https://www.datalab.to/blog/introducing-chandra), [Chandra on GitHub](https://github.com/datalab-to/chandra), [Chandra on Hugging Face](https://huggingface.co/datalab-to/chandra)
+
+Chandra OCR is a new open-source model from Datalab that has taken the top position on the olmOCR benchmark with an overall score of 83.1%. It outperforms GPT-4o (69.9%), Gemini Flash 2 (63.8%), and every other competitor in the field.
+
+What makes Chandra different from traditional OCR tools is its full-page decoding approach. Instead of processing documents in chunks, it reads the entire page at once, which gives it much better layout awareness and accuracy.
+
+## Key Capabilities
+
+| Category | Score | Rank |
+| :--- | :--- | :--- |
+| **Tables** | 88.0 | #1 |
+| **Old Scans Math** | 80.3 | #1 |
+| **Old Scans** | 50.4 | #1 |
+| **Long Tiny Text** | 92.3 | #1 |
+| **Base Documents** | 99.9 | Near-Perfect |
+
+Chandra preserves original document structure and outputs to Markdown, HTML, or JSON. It handles handwritten text, extracts images with captions, supports 40+ languages, and excels at complex content like mathematical equations and intricate tables.
+
+Datalab has made it available as open source on GitHub and Hugging Face, with a hosted API (free tier included) and quantized versions for on-premises deployment capable of processing up to 4 pages per second on an H100 GPU.
+
+## Why This Matters for Developers
+
+If your team processes documents at scale (contracts, legacy documentation, forms), Chandra is the best open-source option available. It is free, commercially viable, and does not compromise on performance. For teams working with Sitecore or content management systems, the structured output (Markdown, JSON) makes it straightforward to pipe extracted content directly into a CMS or RAG pipeline.

@@ -1,0 +1,97 @@
+---
+title: "Request Hedging: Accelerate Your App by Firing Duplicate Requests"
+description: "Request hedging fires a second duplicate request after a short delay, racing to beat outlier latency. Google cut P99.9 latency by 96% with just 2% extra traffic."
+date: 2025-09-01
+published: true
+tags: ['Engineering', 'Performance', 'Next.js']
+---
+
+![Server infrastructure with network connections](/posts/request_hedging.jpg)
+
+Users notice slow requests. Even if 99% finish quickly, that 1% "long-tail" latency can make your app feel sluggish. **Request hedging** solves this by speculatively firing a second duplicate after a short delay, racing to beat outliers before they impact the UI.
+
+## Why the Slowest 1% of Requests Matter
+
+The time it takes for the slowest 1% of requests to finish is known as **P99 latency**. Users are sensitive to slowness, and in architectures where a page render hits 50 microservices, one bad service can drag the whole page down.
+
+Google's Bigtable team discovered that firing a _second_ copy of a read after just **10 milliseconds** cut their P99.9 latency by **96%** while adding only **2% extra traffic**. That's cheaper than a single extra VM instance and far more predictable.
+
+## What Exactly Is Request Hedging?
+
+Send the original request. If no response arrives within a small **hedge delay**, send a duplicate to another healthy replica. Return whichever finishes first and cancel the other.
+
+It works because outliers are random (network hiccups don't hit every server at once) and because most requests finish fast, so the duplicate rarely runs long. You pay a small burst of extra load to avoid a big, visible stall.
+
+## How to Fit Hedging Into a Next.js + Sitecore + .NET Stack
+
+### Next.js (browser or Vercel Edge)
+
+```ts
+export async function hedgedFetch(urls: string[], delayMs = 50) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => {
+    if (urls.length > 1) fetch(urls[1], { signal: controller.signal });
+  }, delayMs);
+
+  try {
+    const winner = await Promise.any(
+      urls.map(u => fetch(u, { signal: controller.signal }))
+    );
+    return winner;
+  } finally {
+    clearTimeout(timer);
+    controller.abort();
+  }
+}
+```
+
+This races two region endpoints, returns the fastest response, and cancels the slower request via `AbortController`.
+
+### .NET Back-end (gRPC)
+
+```json
+{
+  "methodConfig": [{
+    "name": [{ "service": "ProductCatalog" }],
+    "hedgingPolicy": {
+      "maxAttempts": 2,
+      "hedgingDelay": "0.03s",
+      "nonFatalStatusCodes": ["UNAVAILABLE", "DEADLINE_EXCEEDED"]
+    }
+  }]
+}
+```
+
+### .NET Back-end (HTTP)
+
+```csharp
+builder.Services.AddHttpClient("edge")
+    .AddStandardHedgingHandler(o => o.MaxAttempts = 2);
+```
+
+### Envoy / Istio Sidecars
+
+```yaml
+route:
+  per_filter_config:
+    envoy.hedging:
+      hedge_on_per_try_timeout: true
+      initial_hedge_delay: 0.02s
+      max_requests: 2
+```
+
+### Sitecore Experience Edge
+
+Experience Edge already runs in multiple regions. Expose two region-specific GraphQL URLs to the client and let the hedged fetch pick the fastest.
+
+## Roll-out Checklist
+
+1. **Measure first.** Capture your current P50, P95, P99, P99.9 latencies per hop.
+2. **Pick a hedge delay around P95.** Too short wastes capacity; too long misses outliers.
+3. **Restrict to idempotent reads.** Avoid duplicate writes unless your API supports idempotency keys.
+4. **Cap attempts to two.** Start small; you rarely need more.
+5. **Instrument and watch.** Expose metrics like `hedged_attempts`, `cancels`, and tail percentiles. Aim for less than 5% load overhead.
+
+## Why This Matters for Developers
+
+Request hedging is a small change that brings outsized rewards. A few lines of code (or a single config entry) can erase long-tail spikes and make your Next.js + Sitecore + .NET experience feel nearly instantaneous.

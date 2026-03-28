@@ -1,0 +1,22 @@
+---
+title: "LLM Concept Vectors: MIT/UC San Diego Research on Steering Model Behaviour"
+description: "Researchers extract 'concept vectors' from LLMs, enabling runtime behavior tuning without retraining. Under a minute on a single GPU, fewer than 500 examples."
+date: 2026-02-26
+published: true
+tags: ['AI', 'Research']
+---
+
+![LLM concept vectors research visualization showing neural activation patterns](/posts/18_llm_concept_vectors.jpg)
+
+**Date:** February 23, 2026
+**Source:** [Science](https://www.science.org/doi/10.1126/science.adn8252)
+
+Researchers from MIT and UC San Diego published a paper in *Science* describing a new algorithm called the Recursive Feature Machine (RFM) that can extract concept vectors from large language models. These are patterns of neural activity corresponding to specific ideas or behaviors. Using fewer than 500 training samples and under a minute of compute on a single A100 GPU, researchers were able to steer models toward or away from specific behaviors, bypass safety features, and transfer concepts across languages.
+
+The technique works across LLMs, vision-language models, and reasoning models.
+
+## Why This Matters for Developers
+
+This research points to a future beyond prompt engineering. Instead of coaxing a model into a desired behavior with carefully crafted text, developers will be able to directly manipulate the model's internal representations of concepts. That is a fundamentally different level of control.
+
+It opens the door to more precise model customization and makes it easier to debug why a model behaves a certain way. The ability to extract and transfer concepts across languages is particularly significant for global teams building multilingual applications, since it sidesteps the need to curate separate alignment datasets for each language. The practical takeaway: the developers who learn to work with internal model representations, not just prompts, will have a serious edge in building AI-powered applications.
