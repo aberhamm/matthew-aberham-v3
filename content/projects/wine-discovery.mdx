@@ -1,126 +1,37 @@
 ---
-title: 'Wine Discovery Platform'
-description: 'An AI-powered recommendation platform that pairs users with wines through natural language search, vector embeddings, and personalized taste profiles.'
+title: 'AI Sommelier & Multi-Tenant Chatbot Platform'
+description: 'A full-stack AI chatbot platform for wine education and discovery. Organizations deploy custom AI sommeliers backed by structured knowledge bases, vector embeddings, and domain-specific tools — configurable per tenant without touching code.'
 date: 2025-01-01
 published: true
-technologies: ['Next.js', 'Python', 'PostgreSQL', 'Vector Search', 'AI/ML']
+technologies: ['Next.js', 'Supabase', 'TypeScript', 'Vercel AI SDK', 'pgvector', 'Docker']
 slug: 'wine-discovery'
 ---
 
-# The Wine Discovery Platform: A Technical Overview
+# AI Sommelier & Multi-Tenant Chatbot Platform
 
-## Table of Contents
+A full-stack AI chatbot platform built around wine education and discovery. Organizations embed a lightweight chat widget on their site that connects visitors to AI-powered wine assistants, each backed by curated knowledge bases of wines, grapes, regions, and wineries.
 
-- [Introduction](#introduction)
-- [Core Features](#core-features)
-  - [Personalized Wine Recommendations](#1-personalized-wine-recommendations)
-  - [Conversational Search and AI Assistance](#2-conversational-search-and-ai-assistance)
-  - [Vector Search for Enhanced Matching](#3-vector-search-for-enhanced-matching)
-  - [Next.js-Based Front-End for Seamless User Experience](#4-nextjs-based-front-end-for-seamless-user-experience)
-  - [Backend Architecture and API Design](#5-backend-architecture-and-api-design)
-  - [Machine Learning and Data Pipeline](#6-machine-learning-and-data-pipeline)
-- [Architectural Overview](#architectural-overview)
-  - [Build and Development Tools](#1-build-and-development-tools)
-  - [Front-End Architecture](#2-front-end-architecture)
-  - [Backend and API Layer](#3-backend-and-api-layer)
-  - [AI & Recommendation Engine](#4-ai--recommendation-engine)
-  - [Data Processing Pipeline](#5-data-processing-pipeline)
-  - [DevOps & Infrastructure](#6-devops--infrastructure)
-- [Data Flow Overview](#data-flow-overview)
-- [Conclusion](#conclusion)
+## Wine Knowledge & AI
 
-## Introduction
+- Pluggable knowledge architecture connecting chatbots to wine databases, grape/region/winery APIs, and structured tasting data via vector embeddings
+- Domain-specific AI tools for grape lookups, region exploration, wine style matching, and wine research — giving the AI structured knowledge beyond a generic LLM
+- Two-layer prompt governance: platform-locked sommelier personas with org-configurable addendums for brand voice and house style
+- Streaming responses with tool use, prompt caching, and message-aware context windows
 
-The Wine Discovery Platform is an AI-powered recommendation system designed to help users explore and discover wines tailored to their personal preferences. The platform integrates modern web technologies, advanced search algorithms, and AI-driven natural language processing (NLP) to provide users with an intuitive and interactive experience.
+## Multi-Tenancy & Widget
 
-## Core Features
+- Embeddable JavaScript chat widget with API-key auth, CORS enforcement, and multilingual support (English, French, German)
+- Multi-tenant organization model — wine retailers, restaurants, distributors, and educators each get scoped chatbots, knowledge bases, member management, and usage dashboards
+- Subscription + overage billing with token/request limits, real-time usage visibility, and automated enforcement
 
-### 1. **Personalized Wine Recommendations**
+## Admin & Operations
 
-- Utilizes a combination of **user input, tasting notes, and historical preferences** to generate highly relevant wine suggestions.
-- Leverages **Retrieval-Augmented Generation (RAG)** to improve contextual relevance by pulling from a knowledge base of wines, grape varieties, and tasting profiles.
+- Conversation analytics with per-chat cost tracking, suggestion click-through rates, and audit logging
+- User management with role impersonation
+- Custom SSO via Access Broker portal, cookie-based sessions, and API-key auth for widget endpoints
 
-### 2. **Conversational Search and AI Assistance**
+## Architecture
 
-- Implements a **chat-based UI** that allows users to describe their preferences in natural language.
-- Uses **LLM-powered NLP models** to interpret queries and map them to structured wine data.
-
-### 3. **Vector Search for Enhanced Matching**
-
-- Converts wine flavor profiles into **vector embeddings** for similarity-based recommendations.
-- Implements **semantic search** with a **vector database** to surface wines with similar characteristics, even if a user describes them in subjective terms.
-
-### 4. **Next.js-Based Front-End for Seamless User Experience**
-
-- Built using **Next.js and TypeScript** for a high-performance, server-rendered experience.
-- Features **interactive UI components** for browsing and filtering wines based on various attributes such as grape type, region, body, and pairing suggestions.
-
-### 5. **Backend Architecture and API Design**
-
-- Developed using **Node.js and Python**, with **GraphQL and REST API endpoints** for structured data access.
-- Connects to a **PostgreSQL database** optimized for complex queries on wine attributes.
-- Integrates **external APIs for real-time wine availability and reviews**.
-
-### 6. **Machine Learning and Data Pipeline**
-
-- **Data ingestion pipeline** curates and updates wine metadata from public and proprietary sources.
-- Uses **ML models to predict user preferences** based on past selections and ratings.
-- Implements **feedback loops** where user interactions refine future recommendations.
-
-## Architectural Overview
-
-The Wine Discovery Platform is built with a **modular, scalable monorepo architecture**, ensuring reliability, maintainability, and seamless integration with external data sources. The architecture is designed with **performance, fault tolerance, and security** in mind, leveraging **cloud-native services and distributed computing techniques**.
-
-### **1. Build and Development Tools**
-
-- **Package Management:** PNPM (v8+) with Workspaces
-- **Monorepo Management:** Turborepo
-- **Node.js Version:** v18+
-- **TypeScript for type safety and scalability**
-- **Prettier for code formatting and code consistency**
-- **ESLint for linting and ensuring coding standards**
-
-### **2. Front-End Architecture**
-
-- Developed using **Next.js** for **server-side rendering (SSR)** and **static site generation (SSG)** to optimize performance.
-- Implements a **component-driven architecture** using **React and TypeScript**, ensuring reusable and scalable UI elements.
-- Styling managed with **Tailwind CSS**, utilizing **prettier-plugin-tailwindcss** for automatic formatting.
-- Uses **Headless UI** and **Hero Icons** to ensure consistency across UI elements.
-- **Shared component libraries**: `@ai-somm/design-system` and `@ai-somm/core-ui` for consistent design patterns.
-- Multiple UI applications:
-  - **Admin UI** for content and platform management.
-  - **Marketing UI** for public-facing discovery.
-  - **Chatbot UI** for conversational interactions.
-
-### **3. Backend and API Layer**
-
-- Primary backend services built with **Python (Flask API)** and **Node.js**.
-- **GraphQL APIs** for optimized data fetching and **RESTful endpoints** for compatibility with third-party services.
-- **Database integration with PostgreSQL (via SQLAlchemy)** for efficient relational data handling.
-- **Algolia integration** for full-text search capabilities.
-- **Hybrid search system** combining:
-  - **Vector search** via Supabase (pgvector) and Pinecone.
-  - **Full-text search** via PostgreSQL and Algolia.
-  - **Reciprocal Rank Fusion (RRF) algorithm** to merge ranking results.
-
-## Data Flow Overview
-
-```
-Input Query
-  ↓
-Embedding Generation
-  ↓
-Hybrid Search
-  ├─→ Vector Similarity Search (pgvector/Pinecone)
-  └─→ Full-text Search (PostgreSQL/Algolia)
-  ↓
-Result Fusion (Reciprocal Rank Fusion Algorithm)
-  ↓
-LLM Enhancement/Processing
-  ↓
-Response Generation
-```
-
-## Conclusion
-
-The Wine Discovery Platform combines **state-of-the-art AI, NLP, and scalable web technologies** to deliver an intelligent and efficient wine recommendation experience. Designed with **a modular monorepo structure, hybrid search techniques, and cloud-native deployment**, the platform ensures **high availability, extensibility, and precision** in wine discovery. Future enhancements will continue to integrate cutting-edge AI models and retail partnerships to create a seamless, end-to-end user experience.
+- Part of a three-app ecosystem: the chatbot platform is supported by a structured wine knowledge API and an automated scraping pipeline that keeps wine data current — all sharing a common database
+- Built as a pnpm monorepo with Next.js 15, Supabase (PostgreSQL + pgvector), Drizzle ORM, RabbitMQ workers, and Docker Compose
+- Tested with Vitest, Testing Library, and Playwright E2E against local Supabase
