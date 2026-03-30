@@ -1,0 +1,39 @@
+---
+title: 'Unstructured Data Portal'
+description: 'A self-hosted content aggregation and search platform that ingests heterogeneous web data, runs it through an AI-powered enrichment pipeline, and serves it via a polished UI with hybrid semantic search.'
+date: 2025-05-01
+published: true
+technologies: ['Next.js', 'Fastify', 'PostgreSQL', 'BullMQ', 'Redis', 'Docker']
+slug: 'unstructured-data-portal'
+---
+
+# Unstructured Data Portal
+
+A full-stack, self-hosted content aggregation and search platform for ingesting, processing, and exploring heterogeneous data from across the web — articles, products, job listings, videos, documents, and more.
+
+Built as a monorepo with Next.js, Fastify, PostgreSQL (Supabase), BullMQ, and Redis. The system normalizes disparate content into a unified schema and runs it through a multi-stage worker pipeline before serving it through a web UI with faceted search, infinite scroll, and detail drawers.
+
+## Search
+
+- Hybrid search combining Postgres full-text search (BM25), trigram fuzzy matching, and vector embeddings for semantic retrieval
+- Automatic fallback across search strategies
+
+## AI Enrichment
+
+- Multi-stage worker pipeline: normalize, enrich, embed, media, index
+- AI-powered generation of titles, summaries, categories, and text embeddings via OpenRouter
+- Configurable prompt overrides and cost tracking
+
+## Security & Multi-Tenancy
+
+- Row-Level Security enforced multi-tenancy with per-request scoped database connections
+- SSRF-hardened ingestion with URL validation, HMAC-signed webhooks, and scoped API key authentication
+- SSO via a central auth portal with iron-session cookies and passkey/social login support
+
+## Operations & UX
+
+- Admin dashboard with pipeline monitoring, health checks, AI spend analytics, and audit logs
+- Telegram bot for mobile content capture with real-time pipeline progress
+- Media pipeline with Puppeteer screenshots, thumbnail downloads, and LQIP blur placeholders
+- Progressive web UX with keyboard shortcuts, density toggle, bulk operations, and RSS/JSON/CSV export
+- Accessibility-first: skip-to-content, aria-live regions, 44px touch targets, responsive design

@@ -1,0 +1,36 @@
+---
+title: 'Supabase Access Broker'
+description: 'A centralized identity and access management platform for multi-app environments built on Supabase, providing unified SSO, JWT claims-based authorization, and an admin dashboard for user and permission management.'
+date: 2025-04-01
+published: true
+technologies: ['Next.js', 'Supabase', 'TypeScript', 'WebAuthn', 'PostgreSQL', 'Playwright']
+slug: 'supabase-access-broker'
+---
+
+# Supabase Access Broker
+
+A centralized identity and access management platform for multi-app environments built on Supabase. Instead of each app implementing its own auth system, Access Broker provides a unified SSO portal, admin dashboard, and API for user and permission management.
+
+## Authentication
+
+- SSO portal supporting passkeys (WebAuthn), OAuth (Google, GitHub), email OTP, magic links, passwords, and MFA
+- Per-app feature flags to control which auth methods are available
+- Authorization code exchange flow — apps redirect to the SSO portal, then exchange codes server-side for sessions
+
+## Authorization
+
+- JWT claims-based permissions embedded directly in tokens for zero-latency authorization decisions
+- Global and app-specific claims (e.g., `claims_admin`, `apps.my-app.role = 'editor'`)
+- Direct integration with PostgreSQL Row Level Security policies, eliminating extra authorization queries
+
+## Administration
+
+- Admin dashboard for user management, claims editing, app registry, API key management, and audit logging
+- User self-service for passkey management, MFA enrollment, profile updates, and account linking
+- REST API for programmatic auth code exchange, user lookup, app configuration, and webhook delivery
+
+## Architecture
+
+- Supabase-native with a dedicated `access_broker_app` schema and 16+ versioned SQL migrations
+- Modular design — use just the SQL functions or deploy the full platform
+- E2E tested with Playwright, deployed via Docker
