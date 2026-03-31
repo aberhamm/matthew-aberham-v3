@@ -19,7 +19,7 @@ export default function Experience({
   return (
     <div className="flex flex-col gap-0.5">
       <div className="flex flex-row flex-wrap items-center gap-x-2">
-        <h3 className="font-semibold">{role}</h3>
+        <h3 className="text-sm font-semibold">{role}</h3>
         <span className="text-xs font-mono text-muted-foreground tracking-wide">
           {name}
         </span>

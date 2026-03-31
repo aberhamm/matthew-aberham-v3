@@ -69,7 +69,7 @@ const components = {
     </a>
   ),
   p: ({ children, ...props }: ComponentProps) => (
-    <p className="leading-7 [&:not(:first-child)]:mt-6" {...props}>
+    <p className="leading-relaxed [&:not(:first-child)]:mt-6" {...props}>
       {children}
     </p>
   ),

@@ -13,7 +13,7 @@ export default function BlogPage() {
   const posts = getPosts();
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-20">
+    <div className="mx-auto max-w-3xl px-5 py-20 sm:px-10">
       <Link
         href="/"
         className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-2 transition-colors"

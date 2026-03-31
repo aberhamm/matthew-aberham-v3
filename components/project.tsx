@@ -39,7 +39,7 @@ export default function Project({
   return (
     <div className="flex flex-col gap-0.5">
       <div className="flex flex-row items-center gap-2">{LinkComponent}</div>
-      <p className="text-secondary-foreground">{description}</p>
+      <p className="text-secondary-foreground text-sm">{description}</p>
     </div>
   );
 }
