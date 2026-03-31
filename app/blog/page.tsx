@@ -13,7 +13,7 @@ export default function BlogPage() {
   const posts = getPosts();
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-20 sm:px-10">
+    <div className="mx-auto max-w-(--breakpoint-md) px-5 py-20 sm:px-10 md:px-20">
       <Link
         href="/"
         className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-2 text-sm transition-colors"
@@ -31,26 +31,43 @@ export default function BlogPage() {
       {posts.length === 0 ? (
         <p className="text-muted-foreground">No posts yet. Check back soon.</p>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6">
           {posts.map((post) => (
-            <article
-              key={post.slug}
-              className="flex flex-row items-baseline gap-4"
-            >
-              <time
-                dateTime={post.date}
-                className="text-muted-foreground w-16 shrink-0 text-sm"
-              >
-                {new Date(post.date).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                })}
-              </time>
+            <article key={post.slug}>
               <Link
                 href={`/blog/${post.slug}`}
-                className="relative text-sm font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-accent-pop after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:text-accent-pop hover:after:origin-bottom-left hover:after:scale-x-100"
+                className="group"
               >
-                {post.title}
+                <p className="group-hover:text-accent-pop text-sm font-medium transition-colors">
+                  {post.title}
+                </p>
+                <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
+                  {post.description}
+                </p>
+                <div className="mt-2 flex items-center gap-2">
+                  <time
+                    dateTime={post.date}
+                    className="text-muted-foreground text-xs"
+                  >
+                    {new Date(post.date).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </time>
+                  {post.tags && post.tags.length > 0 && (
+                    <div className="flex gap-1.5">
+                      {post.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="bg-muted text-muted-foreground rounded-md px-1.5 py-0.5 text-xs"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </Link>
             </article>
           ))}

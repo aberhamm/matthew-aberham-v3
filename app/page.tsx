@@ -29,7 +29,7 @@ export default function Home() {
         </header>
         <main className="mt-20 mb-2 flex h-full w-full flex-col gap-12 sm:mb-0">
           {/* About */}
-          <p className="space-y-4 text-base">
+          <p className="space-y-4">
             <span className="relative block">
               Hi, I&apos;m Matt. I&apos;m a Solutions Architect and Full-Stack
               Engineer who has been building for the web since 2013.
