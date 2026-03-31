@@ -114,8 +114,9 @@ export default async function PostPage({
           <div>
             <p className="font-semibold">Matthew Aberham</p>
             <p className="text-muted-foreground mt-1 text-sm">
-              Software engineer and consultant at Perficient. Writing about AI
-              developer tooling, infrastructure, and security.
+              Solutions Architect and Full-Stack Engineer at Perficient.
+              Writing about AI developer tooling, infrastructure, and
+              security.
             </p>
           </div>
         </div>

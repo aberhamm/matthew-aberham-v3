@@ -5,7 +5,8 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Blog | Matthew Aberham',
-  description: 'Thoughts on software engineering, architecture, and technology.',
+  description:
+    'Writing about AI tooling, infrastructure, and the security gaps nobody is talking about.',
 };
 
 export default function BlogPage() {
@@ -21,7 +22,11 @@ export default function BlogPage() {
         Back to Home
       </Link>
 
-      <h1 className="mb-10 text-3xl font-bold">Blog</h1>
+      <h1 className="mb-2 text-3xl font-bold">Blog</h1>
+      <p className="text-muted-foreground mb-10 text-sm">
+        Writing about AI tooling, infrastructure, and the security gaps nobody
+        is talking about.
+      </p>
 
       {posts.length === 0 ? (
         <p className="text-muted-foreground">No posts yet. Check back soon.</p>
