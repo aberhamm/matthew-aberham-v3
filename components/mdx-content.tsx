@@ -122,7 +122,7 @@ const components = {
   ),
   pre: ({ children, ...props }: ComponentProps) => (
     <pre
-      className="mt-6 mb-4 overflow-x-auto rounded-lg border bg-black py-4"
+      className="mt-6 mb-4 overflow-x-auto rounded-lg border py-4 text-sm [&>code]:grid [&>code]:bg-transparent [&>code]:p-0 [&>code]:border-0"
       {...props}
     >
       {children}
