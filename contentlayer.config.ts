@@ -1,6 +1,7 @@
 import { defineDocumentType, makeSource } from 'contentlayer2/source-files';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypePrettyCode from 'rehype-pretty-code';
 import remarkGfm from 'remark-gfm';
 
 export const Project = defineDocumentType(() => ({
@@ -95,6 +96,13 @@ export default makeSource({
           properties: {
             className: ['anchor'],
           },
+        },
+      ],
+      [
+        rehypePrettyCode,
+        {
+          theme: 'github-dark',
+          keepBackground: true,
         },
       ],
     ],
