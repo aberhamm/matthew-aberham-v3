@@ -70,7 +70,7 @@ export default async function PostPage({
     <div className="mx-auto max-w-3xl px-5 py-20 sm:px-10">
       <Link
         href="/blog"
-        className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-2 transition-colors"
+        className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-2 text-sm transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Blog
@@ -114,7 +114,7 @@ export default async function PostPage({
       <footer className="border-border mt-16 border-t pt-8">
         <div className="flex items-start gap-4">
           <div>
-            <p className="font-semibold">Matthew Aberham</p>
+            <p className="text-sm font-semibold">Matthew Aberham</p>
             <p className="text-muted-foreground mt-1 text-sm">
               Solutions Architect and Full-Stack Engineer at Perficient.
               Writing about AI developer tooling, infrastructure, and
@@ -135,7 +135,7 @@ export default async function PostPage({
                 href={`/blog/${related.slug}`}
                 className="group border-border hover:border-muted-foreground/30 rounded-lg border p-4 transition-colors"
               >
-                <p className="group-hover:text-accent-pop font-medium transition-colors">
+                <p className="group-hover:text-accent-pop text-sm font-medium transition-colors">
                   {related.title}
                 </p>
                 <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
