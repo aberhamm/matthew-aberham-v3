@@ -67,7 +67,7 @@ export default async function PostPage({
   const relatedPosts = getRelatedPosts(post.slug, post.tags || []);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-20">
+    <div className="mx-auto max-w-3xl px-5 py-20 sm:px-10">
       <Link
         href="/blog"
         className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-2 transition-colors"
@@ -105,7 +105,9 @@ export default async function PostPage({
           </div>
         </header>
 
-        <MDXContent code={post.body.code} />
+        <div className="mx-auto max-w-2xl">
+          <MDXContent code={post.body.code} />
+        </div>
       </article>
 
       {/* Author Footer */}
@@ -151,11 +153,11 @@ export default async function PostPage({
                     })}
                   </time>
                   {related.tags && related.tags.length > 0 && (
-                    <div className="flex gap-1">
+                    <div className="flex gap-1.5">
                       {related.tags.slice(0, 2).map((tag) => (
                         <span
                           key={tag}
-                          className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-xs"
+                          className="bg-muted text-muted-foreground rounded-md px-1.5 py-0.5 text-xs"
                         >
                           {tag}
                         </span>

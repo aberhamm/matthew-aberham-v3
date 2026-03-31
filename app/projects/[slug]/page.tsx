@@ -50,7 +50,7 @@ export default async function ProjectPage({
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-20">
+    <div className="mx-auto max-w-3xl px-5 py-20 sm:px-10">
       <Link
         href="/"
         className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-2 transition-colors"
@@ -61,11 +61,11 @@ export default async function ProjectPage({
 
       <article>
         <h1 className="mb-4 text-3xl font-bold">{project.title}</h1>
-        <div className="mb-8 flex flex-wrap gap-2">
+        <div className="mb-8 flex flex-wrap gap-1.5">
           {project.technologies?.map((tech) => (
             <span
               key={tech}
-              className="bg-muted text-muted-foreground rounded-md px-2 py-1 text-sm"
+              className="bg-muted text-muted-foreground rounded-md px-1.5 py-0.5 text-xs"
             >
               {tech}
             </span>
