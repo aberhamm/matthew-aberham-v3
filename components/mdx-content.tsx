@@ -1,7 +1,7 @@
 'use client';
 
 import { useMDXComponent } from 'next-contentlayer2/hooks';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 
 interface MDXContentProps {
   code: string;
@@ -9,6 +9,26 @@ interface MDXContentProps {
 
 interface ComponentProps {
   children?: ReactNode;
+}
+
+function MdxImage({ alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <span className="relative mt-6 block aspect-video w-full overflow-hidden rounded-md border">
+      {!loaded && (
+        <span className="bg-muted absolute inset-0 animate-shimmer" />
+      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        alt={alt}
+        loading="lazy"
+        onLoad={() => setLoaded(true)}
+        className={`h-full w-full object-cover transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        {...props}
+      />
+    </span>
+  );
 }
 
 const components = {
@@ -96,10 +116,7 @@ const components = {
       {children}
     </blockquote>
   ),
-  img: ({ alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img className="rounded-md border" alt={alt} {...props} />
-  ),
+  img: MdxImage,
   hr: ({ ...props }) => (
     <hr className="border-border my-4 md:my-8" {...props} />
   ),
