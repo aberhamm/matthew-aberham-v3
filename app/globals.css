@@ -259,7 +259,3 @@ pre:not([data-rehype-pretty-code-figure] pre) > code:not([data-theme]) {
   display: block;
   padding: 0 1rem;
 }
-
-[data-rehype-pretty-code-figure] code > [data-line]::before {
-  content: none;
-}
