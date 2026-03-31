@@ -236,9 +236,27 @@ body {
   padding: 0 !important;
   font-size: inherit;
   border-radius: 0;
+  counter-reset: line;
 }
 
 [data-rehype-pretty-code-figure] [data-line] {
+  padding: 0 1rem 0 0.5rem;
+}
+
+[data-rehype-pretty-code-figure] [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 2rem;
+  margin-right: 0.75rem;
+  text-align: right;
+  color: hsl(var(--muted-foreground) / 0.4);
+  font-size: 0.75rem;
+}
+
+/* Plain text code blocks without rehype-pretty-code processing */
+pre:not([data-rehype-pretty-code-figure] pre) > code:not([data-theme]) {
+  display: block;
   padding: 0 1rem;
 }
 
