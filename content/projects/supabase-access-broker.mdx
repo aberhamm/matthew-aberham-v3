@@ -1,6 +1,6 @@
 ---
 title: 'Supabase Access Broker'
-description: 'Solves the problem of managing auth across multiple apps sharing a single Supabase project — unified SSO portal with passkeys, JWT claims-based authorization wired to PostgreSQL RLS, and an admin dashboard so non-engineers can manage access.'
+description: 'Solves the problem of managing auth across multiple apps sharing a single Supabase project. Unified SSO portal with passkeys, JWT claims-based authorization wired to PostgreSQL RLS, and an admin dashboard so non-engineers can manage access.'
 date: 2025-04-01
 published: true
 technologies: ['Next.js', 'Supabase', 'TypeScript', 'WebAuthn', 'PostgreSQL', 'Playwright']
@@ -15,7 +15,7 @@ A centralized identity and access management platform for multi-app environments
 
 - SSO portal supporting passkeys (WebAuthn), OAuth (Google, GitHub), email OTP, magic links, passwords, and MFA
 - Per-app feature flags to control which auth methods are available
-- Authorization code exchange flow — apps redirect to the SSO portal, then exchange codes server-side for sessions
+- Authorization code exchange flow: apps redirect to the SSO portal, then exchange codes server-side for sessions
 
 ## Authorization
 
@@ -32,5 +32,5 @@ A centralized identity and access management platform for multi-app environments
 ## Architecture
 
 - Supabase-native with a dedicated `access_broker_app` schema and 16+ versioned SQL migrations
-- Modular design — use just the SQL functions or deploy the full platform
+- Modular design: use just the SQL functions or deploy the full platform
 - E2E tested with Playwright, deployed via Docker

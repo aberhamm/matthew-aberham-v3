@@ -13,14 +13,14 @@ A production data platform that automates collection, normalization, and deliver
 
 ## Architecture
 
-- Plugin architecture with declarative configuration — new data sources onboarded without modifying core infrastructure
+- Plugin architecture with declarative configuration. New data sources onboarded without modifying core infrastructure
 - Distributed task orchestration via Celery with workload-specialized worker pools, checkpoint/resume for long-running pipelines, and idempotent execution guarantees
 - REST API with HMAC-signed webhook delivery for downstream system integration, idempotent job triggers, and real-time status polling
 
 ## Data Pipeline
 
 - Automated normalization pipeline producing clean, deduplicated records
-- Lifecycle tracking for all records — first seen, last seen, and discontinued states
+- Lifecycle tracking for all records: first seen, last seen, and discontinued states
 - Structured output ready for downstream consumption
 
 ## Operations

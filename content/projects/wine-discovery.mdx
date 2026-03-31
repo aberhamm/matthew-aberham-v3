@@ -1,6 +1,6 @@
 ---
 title: 'AI Sommelier & Multi-Tenant Chatbot Platform'
-description: 'A full-stack AI chatbot platform for wine education and discovery. Organizations deploy custom AI sommeliers backed by structured knowledge bases, vector embeddings, and domain-specific tools — configurable per tenant without touching code.'
+description: 'A full-stack AI chatbot platform for wine education and discovery. Organizations deploy custom AI sommeliers backed by structured knowledge bases, vector embeddings, and domain-specific tools, configurable per tenant without touching code.'
 date: 2025-01-01
 published: true
 technologies: ['Next.js', 'Supabase', 'TypeScript', 'Vercel AI SDK', 'pgvector', 'Docker']
@@ -14,14 +14,14 @@ A full-stack AI chatbot platform built around wine education and discovery. Orga
 ## Wine Knowledge & AI
 
 - Pluggable knowledge architecture connecting chatbots to wine databases, grape/region/winery APIs, and structured tasting data via vector embeddings
-- Domain-specific AI tools for grape lookups, region exploration, wine style matching, and wine research — giving the AI structured knowledge beyond a generic LLM
+- Domain-specific AI tools for grape lookups, region exploration, wine style matching, and wine research, giving the AI structured knowledge beyond a generic LLM
 - Two-layer prompt governance: platform-locked sommelier personas with org-configurable addendums for brand voice and house style
 - Streaming responses with tool use, prompt caching, and message-aware context windows
 
 ## Multi-Tenancy & Widget
 
 - Embeddable JavaScript chat widget with API-key auth, CORS enforcement, and multilingual support (English, French, German)
-- Multi-tenant organization model — wine retailers, restaurants, distributors, and educators each get scoped chatbots, knowledge bases, member management, and usage dashboards
+- Multi-tenant organization model: wine retailers, restaurants, distributors, and educators each get scoped chatbots, knowledge bases, member management, and usage dashboards
 - Subscription + overage billing with token/request limits, real-time usage visibility, and automated enforcement
 
 ## Admin & Operations
@@ -32,6 +32,6 @@ A full-stack AI chatbot platform built around wine education and discovery. Orga
 
 ## Architecture
 
-- Part of a three-app ecosystem: the chatbot platform is supported by a structured wine knowledge API and an automated scraping pipeline that keeps wine data current — all sharing a common database
+- Part of a three-app ecosystem: the chatbot platform is supported by a structured wine knowledge API and an automated scraping pipeline that keeps wine data current, all sharing a common database
 - Built as a pnpm monorepo with Next.js 15, Supabase (PostgreSQL + pgvector), Drizzle ORM, RabbitMQ workers, and Docker Compose
 - Tested with Vitest, Testing Library, and Playwright E2E against local Supabase
