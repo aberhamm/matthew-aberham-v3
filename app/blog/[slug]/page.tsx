@@ -67,7 +67,7 @@ export default async function PostPage({
   const relatedPosts = getRelatedPosts(post.slug, post.tags || []);
 
   return (
-    <div className="mx-auto max-w-(--breakpoint-md) px-5 py-20 sm:px-10 md:px-20">
+    <div className="mx-auto max-w-(--breakpoint-md) px-5 py-20 text-sm sm:px-10 md:px-20">
       <Link
         href="/blog"
         className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-2 text-sm transition-colors"
