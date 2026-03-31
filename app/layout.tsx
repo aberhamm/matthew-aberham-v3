@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import localFont from 'next/font/local';
-import { BlurOverlay } from '@/components/blur-overlay';
 import './globals.css';
 import { GlobalStateProvider } from './providers/GlobalStateProvider';
 
@@ -94,7 +93,6 @@ export default async function RootLayout({
         className={`${nhass.className} ${nhass.variable} ${geistSans.variable} ${geistMono.variable}`}
         style={{ fontFamily: 'var(--font-nhass), system-ui, sans-serif' }}
       >
-        <BlurOverlay />
         <GlobalStateProvider initialState={{}}>{children}</GlobalStateProvider>
       </body>
     </html>
