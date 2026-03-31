@@ -50,7 +50,7 @@ export default async function ProjectPage({
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-20 sm:px-10">
+    <div className="mx-auto max-w-(--breakpoint-md) px-5 py-20 sm:px-10 md:px-20">
       <Link
         href="/"
         className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-2 text-sm transition-colors"
