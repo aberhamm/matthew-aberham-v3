@@ -105,7 +105,9 @@ export default makeSource({
         {
           theme: 'github-dark',
           keepBackground: true,
-          defaultLang: 'plaintext',
+          defaultLang: {
+            block: 'plaintext',
+          },
         },
       ],
     ],
