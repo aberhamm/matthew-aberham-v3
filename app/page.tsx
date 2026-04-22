@@ -1,6 +1,7 @@
 import Experience from '@/components/experience';
 import Project from '@/components/project';
 import { Section } from '@/components/section';
+import { Subsection } from '@/components/subsection';
 import Social from '@/components/social';
 import Link from 'next/link';
 import { Footer } from '@/components/footer';
@@ -89,44 +90,46 @@ export default function Home() {
             ))}
           </Section>
 
-          {/* Featured */}
-          {featuredPosts.length > 0 && (
-            <Section title="Featured">
-              {featuredPosts.map((post) => (
-                <Link
-                  key={post.slug}
-                  href={`/blog/${post.slug}`}
-                  className="relative w-fit text-sm font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-accent-pop after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:text-accent-pop hover:after:origin-bottom-left hover:after:scale-x-100"
-                >
-                  {post.title}
-                </Link>
-              ))}
-            </Section>
-          )}
-
-          {/* Latest */}
-          <Section title="Latest">
-            {latestPosts.length > 0 ? (
-              <>
-                {latestPosts.map((post) => (
-                  <Link
-                    key={post.slug}
-                    href={`/blog/${post.slug}`}
-                    className="relative w-fit text-sm font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-accent-pop after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:text-accent-pop hover:after:origin-bottom-left hover:after:scale-x-100"
-                  >
-                    {post.title}
-                  </Link>
-                ))}
-                <Link
-                  href="/blog"
-                  className="text-muted-foreground hover:text-accent-pop text-sm transition-colors"
-                >
-                  View all {posts.length}{' '}
-                  {posts.length === 1 ? 'article' : 'articles'}
-                </Link>
-              </>
-            ) : (
+          {/* Blog */}
+          <Section title="Blog">
+            {posts.length === 0 ? (
               <p className="text-muted-foreground">Coming soon.</p>
+            ) : (
+              <>
+                {featuredPosts.length > 0 && (
+                  <Subsection title="Featured">
+                    {featuredPosts.map((post) => (
+                      <Link
+                        key={post.slug}
+                        href={`/blog/${post.slug}`}
+                        className="relative w-fit text-sm font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-accent-pop after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:text-accent-pop hover:after:origin-bottom-left hover:after:scale-x-100"
+                      >
+                        {post.title}
+                      </Link>
+                    ))}
+                  </Subsection>
+                )}
+                {latestPosts.length > 0 && (
+                  <Subsection title="Latest">
+                    {latestPosts.map((post) => (
+                      <Link
+                        key={post.slug}
+                        href={`/blog/${post.slug}`}
+                        className="relative w-fit text-sm font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-accent-pop after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:text-accent-pop hover:after:origin-bottom-left hover:after:scale-x-100"
+                      >
+                        {post.title}
+                      </Link>
+                    ))}
+                    <Link
+                      href="/blog"
+                      className="text-muted-foreground hover:text-accent-pop text-sm transition-colors"
+                    >
+                      View all {posts.length}{' '}
+                      {posts.length === 1 ? 'article' : 'articles'}
+                    </Link>
+                  </Subsection>
+                )}
+              </>
             )}
           </Section>
 
