@@ -73,6 +73,8 @@ export const Post = defineDocumentType(() => ({
     description: { type: 'string', required: true },
     date: { type: 'date', required: true },
     published: { type: 'boolean', required: true },
+    featured: { type: 'boolean', required: false },
+    featuredOrder: { type: 'number', required: false },
     tags: { type: 'list', of: { type: 'string' }, required: false },
   },
   computedFields: {

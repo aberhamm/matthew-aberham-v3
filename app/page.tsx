@@ -4,12 +4,22 @@ import { Section } from '@/components/section';
 import Social from '@/components/social';
 import Link from 'next/link';
 import { Footer } from '@/components/footer';
-import { getProjects, getExperiences, getPosts } from '@/lib/content';
+import {
+  getProjects,
+  getExperiences,
+  getPosts,
+  getFeaturedPosts,
+} from '@/lib/content';
 
 export default function Home() {
   const projects = getProjects();
   const experiences = getExperiences();
   const posts = getPosts();
+  const featuredPosts = getFeaturedPosts().slice(0, 4);
+  const featuredSlugs = new Set(featuredPosts.map((p) => p.slug));
+  const latestPosts = posts
+    .filter((p) => !featuredSlugs.has(p.slug))
+    .slice(0, 4);
 
   return (
     <>
@@ -79,11 +89,26 @@ export default function Home() {
             ))}
           </Section>
 
-          {/* Blog */}
-          <Section title="Blog">
-            {posts.length > 0 ? (
+          {/* Featured */}
+          {featuredPosts.length > 0 && (
+            <Section title="Featured">
+              {featuredPosts.map((post) => (
+                <Link
+                  key={post.slug}
+                  href={`/blog/${post.slug}`}
+                  className="relative w-fit text-sm font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-accent-pop after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:text-accent-pop hover:after:origin-bottom-left hover:after:scale-x-100"
+                >
+                  {post.title}
+                </Link>
+              ))}
+            </Section>
+          )}
+
+          {/* Latest */}
+          <Section title="Latest">
+            {latestPosts.length > 0 ? (
               <>
-                {posts.slice(0, 3).map((post) => (
+                {latestPosts.map((post) => (
                   <Link
                     key={post.slug}
                     href={`/blog/${post.slug}`}

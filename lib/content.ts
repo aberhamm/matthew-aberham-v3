@@ -34,3 +34,14 @@ export function getPosts(): Post[] {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
 }
+
+export function getFeaturedPosts(): Post[] {
+  return allPosts
+    .filter((post: Post) => post.published && post.featured)
+    .sort((a: Post, b: Post) => {
+      const ao = a.featuredOrder ?? Number.POSITIVE_INFINITY;
+      const bo = b.featuredOrder ?? Number.POSITIVE_INFINITY;
+      if (ao !== bo) return ao - bo;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+}
