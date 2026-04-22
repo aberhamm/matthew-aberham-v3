@@ -1,0 +1,79 @@
+---
+title: "Claude Code Changed Default Reasoning, Buried It in Release Notes"
+description: "Opus 4.6 was not secretly lobotomized, but Anthropic did silently change two defaults that cost you tokens and reasoning depth. Here is what changed and how to fix it."
+date: 2026-04-17
+published: true
+tags: ['AI', 'Developer Tools', 'Agents']
+---
+
+![A rotary control dial on a dark wooden surface, evoking a silently changed default setting](/posts/21_default_reasoning_dimmer.jpg)
+
+**Date:** February-April 2026
+**Sources:** [Claude Code Issue #24991 — Opus 4.6 Configuration Regression](https://github.com/anthropics/claude-code/issues/24991), [Marginlab Claude Code performance tracker](https://marginlab.ai/trackers/claude-code/), [Yahoo Tech — Viral BridgeBench Post Claims Claude Degraded: Critics Call It Bad Science](https://tech.yahoo.com/ai/claude/articles/viral-bridgebench-post-claims-claude-131318087.html)
+
+If Claude Code has felt dimmer since late February, you are not imagining it.
+
+A few weeks ago the story online was that Anthropic had secretly lobotomized Opus. A company called BridgeMind posted that Opus had dropped from 83.3% to 68.3% on their hallucination leaderboard, and it went viral. A computer scientist named Paul Calcraft looked at it and found the problem pretty quickly: the original test used **6 benchmark tasks**, the retest used **30**. On the six tasks that overlapped, performance was basically the same, 87.6% versus 85.4%. It was a sample-size error, not a model change.
+
+So the "lobotomy" narrative was wrong. Something did change, though, and it is silently costing you tokens and reasoning depth right now.
+
+## What Actually Changed
+
+Anthropic made two silent defaults changes to Claude Code.
+
+**February 9, 2026.** Opus 4.6 was switched to **adaptive thinking by default**. The model now decides how much to reason based on how complex it thinks the task is. Simpler tasks get significantly less thinking. There was no release note. No billing communication. The change landed in a subsequent client update.
+
+**March 3, 2026.** The default effort level dropped from **high** to **medium**. Again, no announcement. Users running Claude Code since January were now, by default, getting meaningfully less reasoning per query than they were getting at launch.
+
+These are not bug fixes. They are product defaults that materially change behavior, and they shipped without notice.
+
+## The Independent Data
+
+Three independent sources have since quantified the impact.
+
+**Stella Laurenzo**, a Senior Director in AMD's AI group, analyzed **6,852 Claude Code session files** across her team's usage and found reasoning depth dropped about **67% by late February**. This is measured reasoning effort per query, not user satisfaction or a benchmark proxy.
+
+**Marginlab's live tracker** ([marginlab.ai](https://marginlab.ai)) shows Opus pass rates down about **6 points** since launch.
+
+**Artificial Analysis** found Opus 4.6 using **30 to 60% more tokens** than Opus 4.5 on the same tasks. More tokens for the same question, with fewer useful results per query. You are paying more and getting less.
+
+Those three data points agree on the same story. The defaults changed, the reasoning got shallower, the token usage went up, and the output quality for structured reasoning tasks went down.
+
+## The Transparency Gap
+
+Anthropic's September 2025 public statement includes this line: *"we never reduce model quality due to demand, time of day, or server load."* That statement is still technically true. Adaptive thinking is a design choice, not a load-shed response. But it is getting harder to square that promise with silent default changes that meaningfully affect the user experience.
+
+A default behavior change at this scale should appear in a changelog that users can watch. This one did not. And there is no way to pin to the February 1 default configuration the way you would pin a package version in npm. The model identifier stays the same; the behavior underneath it moves. Your tests that worked in January can produce different outputs in April, with the same prompt, the same model name, and the same API endpoint. That is a reproducibility problem.
+
+This is not a complaint about cost pressure. Anthropic is burning cash; they have stated publicly they need gross margins north of 77% by 2028 to justify current valuations. Cost-optimizing inference is rational. Doing it without telling users is the problem.
+
+## The Fix
+
+If you use Claude Code and you want the pre-February default behavior back, the fix is one command. Run `/effort high` at the start of a session to restore high-effort reasoning as the session default, or bake it into your workflow:
+
+```
+/effort high
+```
+
+On the API side, set `budget_tokens` explicitly in your requests and do not rely on server defaults for reasoning budget. If you use Claude programmatically through Anthropic's SDK or through abstraction layers like Cowork or n8n, expose `budget_tokens` as a configurable parameter and default it to a known value.
+
+And bookmark Marginlab. The tracker at [marginlab.ai](https://marginlab.ai) monitors major provider default changes in something close to real time. If this happens again, you will see it there before the Reddit thread.
+
+## What This Means for How We Work
+
+You can think of an AI model identifier today the way you think of a moving target with a stable name. The name is the same. The weights may or may not be the same. The system prompt and reasoning defaults underneath it can change silently. Your inference costs, output quality, and test reproducibility now depend on server-side defaults that the provider can move without notice.
+
+A few practical consequences:
+
+- **Pin reasoning budgets explicitly in production code.** Do not rely on defaults.
+- **Run a weekly regression prompt set.** A handful of prompts with known-good outputs, run weekly, will surface silent defaults changes before they affect customer-facing work.
+- **Watch for cost drift, not just quality drift.** A 30 to 60% token increase on the same workload shows up in your API bill. If invoicing suddenly jumps with no usage change, that is the signal.
+- **Abstraction matters.** If your code is locked to a single provider's defaults, a default change becomes a production incident. LiteLLM, Cowork, or any abstraction layer that lets you switch models and explicit reasoning budgets turns a silent default change into a configuration change.
+
+## The Broader Lesson
+
+This is a quiet version of a story that will happen more often. AI providers are running at gross margins that make consumer subscriptions unprofitable at current usage patterns. Silent optimization of defaults is the easiest lever available to them. Expect more of it, across providers, without fanfare.
+
+The teams that handle this well will be the ones with explicit reasoning budgets in production code, weekly regression checks on real prompts, and an abstraction layer that lets them switch providers when the defaults move in a direction they do not want.
+
+Run `/effort high` today. Then decide whether your stack is set up to catch the next silent change before it catches you.

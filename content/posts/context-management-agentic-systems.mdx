@@ -1,0 +1,76 @@
+---
+title: "How Production Agent Systems Manage Context"
+description: "Every production agent system converges on a pattern for managing context as conversations grow. Per-tool truncation, not shared middleware, and a second stage most teams forget."
+date: 2026-04-22
+published: true
+tags: ['AI', 'Agents', 'Engineering']
+---
+
+![An overflowing file cabinet drawer stuffed with papers, evoking context accumulating beyond capacity](/posts/22_context_management_cabinet.jpg)
+
+**Sources:** [Liu et al. (2023), "Lost in the Middle"](https://arxiv.org/abs/2307.03172), [Packer et al. (2023), "MemGPT"](https://arxiv.org/abs/2310.08560), [Anthropic prompt caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching), [Automatic context compaction cookbook](https://github.com/anthropics/anthropic-cookbook/blob/main/misc/automatic-context-compaction.ipynb), [SWE-agent](https://github.com/SWE-agent/SWE-agent), [OpenCode](https://github.com/opencode-ai/opencode), [OpenHands](https://github.com/All-Hands-AI/OpenHands), [Model Context Protocol specification](https://modelcontextprotocol.io/specification)
+
+If you have built an agent loop that runs 40 or more tool calls, you have already met this problem. The agent does a `grep`, reads four files, lists a directory, runs a build, and by turn 15 the conversation history is 180K tokens and getting slower and more expensive with every step. At some point something has to give. What gets cut, and how it gets cut, is the difference between an agent that holds its context together and one that quietly degrades halfway through the run.
+
+Every major agent framework has made decisions about this. Most of the decisions converge. The teams still writing their own harnesses, and that includes most n8n and Cowork builds right now, often land on the wrong pattern first: one shared function that slices every tool result at character 20,000. Production systems have specifically moved away from that pattern, and the reasons they did say something about how to build your own.
+
+## The Problem
+
+An agent loop accumulates context monotonically. Every turn adds the system prompt, the tool definitions, the running conversation, and the full text of every tool result. A 45-call investigation can easily produce 200K+ tokens of raw tool output. Even models with large context windows (200K for Claude, 1M+ for Gemini) face three pressures as that number grows.
+
+**Cost.** Input tokens are priced per token. At $3 per million tokens on Sonnet, 200K tokens of accumulated tool results costs $0.60 per turn by the end of a run. Multiplied across turns, that is real money.
+
+**Quality.** The Lost in the Middle paper (Liu et al., 2023) showed that LLMs attend strongly to the beginning and end of context, and poorly to the middle. Stuffing 200K tokens of tool results into the window degrades reasoning even when the tokens technically fit.
+
+**Latency.** More input tokens means slower time-to-first-token on every call. The agent gets visibly slower turn after turn.
+
+Every framework has to decide what stays, what gets compressed, and what gets dropped. That decision happens at two distinct stages, and most teams only think about one of them.
+
+## Stage 1: Per-Tool Result Truncation
+
+The first stage happens when a tool returns a result. Before that result enters the conversation history, the framework can truncate it.
+
+The naive version of this, and the one most custom agents start with, is a single shared middleware function: take the result string, slice it at character 20,000, return the truncated version. Simple. Fast. Breaks everything.
+
+It breaks everything because tool results do not have uniform structure. A grep result is a list of discrete matches. A file read is sequential text that has meaningful line boundaries. A command output is header-then-bulk-then-verdict. A directory listing is a list of entries. A JSON API response is nested objects. Slicing all of them at char 20,000 produces garbled output: half-matches from the last line of a grep, broken syntax in a mid-object JSON response, a file read that cuts off mid-word and mid-line. The LLM then tries to reason about the truncated result and sometimes succeeds, sometimes hallucinates the rest, and sometimes gives up.
+
+The production pattern is different. Each tool owns its truncation strategy, and the strategy matches the content structure.
+
+- **File reads** truncate at line boundaries and return pagination hints (`"File has more lines. Use offset=N to continue reading from line 500"`). Claude Code reads 2,000 lines per call by default with explicit start/limit params. OpenCode rejects files over 250KB outright with a message telling the agent to use a narrower approach. SWE-agent uses a 100-line sliding window that the agent scrolls through with `scroll_up` and `scroll_down` commands.
+- **Grep results** drop complete matches beyond a limit. Claude Code uses a `head_limit` param (default 250). OpenCode caps at 100 complete matches, sorted by file modification time. The agent always sees valid, parseable results, just fewer of them.
+- **Command output** uses middle-cut: keep the first 15K characters and the last 15K, drop the middle. OpenHands ships this for bash (MAX_CMD_OUTPUT_SIZE = 30,000). SWE-agent truncates at a 100K observation cap with head-plus-tail preservation. This works because bash output has a typical shape: the command echoes at the top, build logs or test progress fills the middle, and the verdict (pass, fail, stack trace) lands at the end. The middle is the part you can afford to lose.
+- **Directory listings** drop entries beyond a limit, same pattern as grep.
+
+The shared layer still exists in these systems, but it is a safety net rather than the primary line of defense. If a tool somehow returns a result that its own strategy did not catch, the safety net cuts at structural boundaries (JSON object boundary, then newline, then raw character as last resort) rather than blind character slicing.
+
+Your grep tool and your file read tool should not share a truncation function. They should share only a fallback.
+
+## Stage 2: Conversation History Compression
+
+The second stage is the one most teams forget until they are six months into production.
+
+Even with per-tool limits holding individual results to reasonable sizes, 40 results at 5K tokens each still adds up. The conversation grows monotonically unless the framework actively manages the aggregate. Stage 2 is where that happens: before each LLM call, the framework rewrites the full message array, deciding what to keep, what to collapse, and what to throw away.
+
+Production systems pick different strategies here, and unlike Stage 1 there is no clean consensus pattern. Four approaches cover most of the ground.
+
+**Observation eviction.** Keep the last N tool results at full fidelity. Replace everything older with a one-line stub (`"Old environment output: (47 lines omitted)"`). SWE-agent uses this with a configurable N (the original paper used 5). Simple, effective, low overhead. The tradeoff is that if the agent needs to reference an old result later, it has to re-run the tool call.
+
+**Stale read collapsing.** If the same file is read twice, replace the earlier read with a stub. Only the latest view of any file stays at full fidelity. SWE-agent implements this as `ClosedWindowHistoryProcessor`. It is semantically correct (the latest view is the most current) and targeted, but only helps when the agent re-reads files, which not every workflow does.
+
+**LLM compaction.** When the conversation crosses a token threshold, call an LLM to summarize the whole history into a compact representation, then drop everything older. Claude Code ships this server-side at configurable token thresholds; OpenCode runs its own summarizer at 95% of context capacity using the same model as the coding agent. Anthropic publishes a cookbook notebook for teams building their own. The compression ratio is dramatic (200K tokens to 2K summary), but it costs an extra LLM call, it is lossy in a way you cannot verify, and the summary itself can hallucinate.
+
+**Evidence pinning.** If a tool result is cited as evidence for a downstream finding, never compress it regardless of age. Older results that turned out to matter stay at full fidelity; unused ones get evicted. This is not shipped by major frameworks as a named feature yet, but it falls out naturally when the agent produces structured findings that reference specific tool calls.
+
+Most serious production systems combine these. Observation eviction for the general case, stale collapsing for file re-reads, LLM compaction as a backstop at high thresholds, and evidence pinning where the agent produces structured outputs.
+
+## What Lost in the Middle Actually Tells You
+
+The Liu et al. paper on Lost in the Middle is usually cited as a warning: LLMs miss information buried in long contexts. The corollary is more useful for context management. If the LLM is not paying much attention to the middle anyway, aggressive compression of middle-aged content is cheaper than it feels. **You are not losing as much signal as you fear, because the model was already half-ignoring it**.
+
+The inverse of that is the real opportunity. Content that belongs at the end of context (the most attended position) does not have to be the most recent content. Promoting high-priority results (errors, findings, cited evidence) to the end of context regardless of age is a live research area, and teams that build it into their harness are working against the model's attention pattern rather than with it.
+
+## The Bigger Frame
+
+Context management is one of those engineering problems that looks low-prestige from the outside and turns out to be load-bearing in practice. It is not where model performance is decided. It is where the difference between a demo agent and a production agent shows up. The production systems that handle long-running tool loops well (Claude Code, OpenCode, SWE-agent) all converge on the same shape: per-tool strategies at Stage 1, a layered approach at Stage 2, and a shared safety net underneath. The ones that stop at "slice everything at 20K characters" tend to stay in pilot.
+
+This is harness engineering at the plumbing layer. The teams that treat it as plumbing worth getting right are the ones whose agents are still coherent at turn 45.
