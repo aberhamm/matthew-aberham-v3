@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation';
 import { allPosts } from 'contentlayer/generated';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
 import { MDXContent } from '@/components/mdx-content';
 
 interface PostPageProps {
@@ -68,13 +67,19 @@ export default async function PostPage({
 
   return (
     <div className="mx-auto max-w-(--breakpoint-md) px-5 py-20 text-sm sm:px-10 md:px-20">
-      <Link
-        href="/blog"
-        className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-2 text-sm transition-colors"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to Blog
-      </Link>
+      <header className="mb-12 flex w-full flex-row flex-wrap items-start justify-between gap-2">
+        <Link href="/" className="text-xl font-semibold">
+          Matthew Aberham
+        </Link>
+        <nav>
+          <Link
+            href="/blog"
+            className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+          >
+            Blog
+          </Link>
+        </nav>
+      </header>
 
       <article>
         <header className="mb-8">
