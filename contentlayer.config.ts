@@ -103,7 +103,7 @@ export default makeSource({
       [
         rehypePrettyCode,
         {
-          theme: 'github-dark',
+          theme: 'github-light',
           keepBackground: true,
           defaultLang: {
             block: 'plaintext',
