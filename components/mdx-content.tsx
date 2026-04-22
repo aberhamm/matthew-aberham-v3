@@ -130,7 +130,7 @@ const components = {
   ),
   code: ({ children, ...props }: ComponentProps) => (
     <code
-      className="bg-muted relative rounded border px-[0.3rem] py-[0.2rem] font-mono text-sm"
+      className="bg-muted relative rounded px-[0.35rem] font-mono text-[0.9em]"
       {...props}
     >
       {children}

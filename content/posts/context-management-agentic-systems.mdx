@@ -38,7 +38,13 @@ It breaks everything because tool results do not have uniform structure. A grep 
 
 The production pattern is different. Each tool owns its truncation strategy, and the strategy matches the content structure.
 
-- **File reads** truncate at line boundaries and return pagination hints pointing the agent to the next region (for example, an `offset=500` suggestion appended to the truncated output). Claude Code reads 2,000 lines per call by default with explicit start/limit params. OpenCode rejects files over 250KB outright with a message telling the agent to use a narrower approach. SWE-agent uses a 100-line sliding window that the agent scrolls through with `scroll_up` and `scroll_down` commands.
+- **File reads** truncate at line boundaries and append a pagination hint so the agent knows how to continue, something like:
+
+  ```
+  File has more lines. Use offset=N to continue reading from line 500
+  ```
+
+  Claude Code reads 2,000 lines per call by default with explicit start/limit params. OpenCode rejects files over 250KB outright with a message telling the agent to use a narrower approach. SWE-agent uses a 100-line sliding window that the agent scrolls through with `scroll_up` and `scroll_down` commands.
 - **Grep results** drop complete matches beyond a limit. Claude Code uses a `head_limit` param (default 250). OpenCode caps at 100 complete matches, sorted by file modification time. The agent always sees valid, parseable results, just fewer of them.
 - **Command output** uses middle-cut: keep the first 15K characters and the last 15K, drop the middle. OpenHands ships this for bash (MAX_CMD_OUTPUT_SIZE = 30,000). SWE-agent truncates at a 100K observation cap with head-plus-tail preservation. This works because bash output has a typical shape: the command echoes at the top, build logs or test progress fills the middle, and the verdict (pass, fail, stack trace) lands at the end. The middle is the part you can afford to lose.
 - **Directory listings** drop entries beyond a limit, same pattern as grep.
