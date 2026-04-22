@@ -1,0 +1,63 @@
+---
+title: "98% More Pull Requests. Zero More Delivery."
+description: "Faros AI data shows teams with high AI coding adoption merge 98% more pull requests, see PR review time rise 91%, and move zero DORA metrics. METR cannot run the control group anymore because developers refuse to code without AI. The tools work; we are measuring them wrong."
+date: 2026-04-15
+published: true
+tags: ['AI', 'Engineering', 'Developer Tools']
+---
+
+![A row of treadmills, motion without forward progress](/posts/24_productivity_paradox.jpg)
+
+**Date:** March-April 2026
+**Sources:** [Faros AI — The AI Productivity Paradox](https://www.faros.ai/blog/ai-software-engineering), [METR — Measuring AI Uplift: Experiment Redesign](https://metr.org/blog/2026-02-24-uplift-update/), [InfoQ — AI Coding Assistants Haven't Sped Up Delivery](https://www.infoq.com/news/2026/03/agoda-ai-code-bottleneck/)
+
+Faros AI analyzed two years of telemetry from more than 10,000 developers across 1,255 teams and published what they called the AI Productivity Paradox. Teams with high AI coding adoption merged **98% more pull requests** and completed **21% more tasks**. Their PR review time rose **91%**, average PR size grew **154%**, bugs per developer rose **9%**, and at the company level there was **no significant correlation** between AI adoption and any DORA metric, deployment frequency, lead time, change failure rate, or recovery time.
+
+Output went up. Throughput did not move. The gap is not a measurement error.
+
+## The Bottleneck Has Moved
+
+Agoda engineer Leonardo Stern published a companion analysis arguing the obvious-in-retrospect explanation. Coding was never the real bottleneck. Specification and verification were. Optimizing the part that was not slow in the first place produces more output in the part that was not slow, and the parts that were slow are now slower because there is more of everything flowing through them.
+
+Stern frames this as a rediscovery of Fred Brooks' 1986 essay "No Silver Bullet." Brooks separated software engineering into accidental complexity (the typing, the syntax, the compilation) and essential complexity (figuring out what to build and whether it works). Tools can attack accidental complexity. Essential complexity stays. AI coding assistants compressed the accidental side. The essential side is the same size it always was, and now it is the whole critical path.
+
+Agoda's CTO Idan Zalzberg confirmed the pattern from the operating side. Engineers now spend more time reviewing AI output and guiding tool usage than they save on implementation. That is not the tools failing. It is the tools working exactly as designed, producing more code faster, delivered to reviewers who have not been given any more time, cognitive budget, or structural support.
+
+## The Control Group Quit
+
+The most interesting recent data is not about speed. It is about whether you can measure speed at all.
+
+METR, the non-profit AI safety research organization, published a 2025 randomized controlled trial that got a lot of attention. Experienced open-source developers using Cursor Pro with Claude 3.5 Sonnet took **19% longer** to complete tasks than the same developers working without AI. The same developers predicted beforehand that AI would speed them up by 24%, and afterward still estimated a 20% speedup. The perception gap was wide and consistent.
+
+On February 24, 2026, METR published an update announcing they were fundamentally changing the experimental design. The reason tells you more than the original result did. In their follow-up cohort (800+ tasks, 57 developers), **30 to 50% of developers declined to submit tasks they expected AI to accelerate significantly**, opting out of the control condition. Other developers refused to participate at all when told they might be randomized into working without AI. One participant wrote, "I avoid issues like AI can finish things in just 2 hours, but I have to spend 20 hours."
+
+The smaller, self-selected cohort that remained showed a -4% slowdown with a confidence interval of -15% to +9%. METR's own conclusion: "The true speedup could be much higher than measured, but the data provides only very weak evidence for quantifying it." The classic RCT for measuring AI productivity has broken down because the control condition is no longer something developers will agree to do.
+
+If you are trying to answer "does AI make developers faster," the most precise answer from the best-run study is now "we cannot measure it anymore." That is itself a data point, and a bigger one than the original 19% slowdown.
+
+## The Perception Gap Is a Management Risk
+
+Stack the findings and a pattern emerges. Developers consistently believe AI is making them faster. Organizational throughput says otherwise. Reviewers absorb the extra volume. Bugs go up slightly. Delivery cycle time stays flat.
+
+That gap is a management risk whenever it touches planning. "AI will make this faster" is now a common assumption in sprint scoping, estimate negotiations, and client commitments. The assumption is mostly wrong, and it is wrong in a specific direction: toward overpromising. If a team commits to a timeline based on the belief that AI is accelerating individual output by 20%, and the actual organizational effect is near zero, the timeline slips and nobody can point to a single decision that caused it.
+
+The least honest thing a delivery lead can do right now is accept the perception at face value. The most honest thing is to measure outcomes directly and ignore the feeling.
+
+## What to Measure Instead
+
+Time-per-task was always a weak productivity metric, and the METR data is the final demonstration of why. The measurement breaks when one of the variables (AI usage) cannot be held constant. Outcome-based metrics do not have this problem.
+
+- **PR cycle time from open to merge.** Covers review time, iteration, and approval. Most useful single metric for whether delivery is actually accelerating.
+- **Defect escape rate.** Bugs caught in production per sprint. Captures whether the extra output is shipping broken.
+- **Test coverage trend.** Direction matters more than absolute number. Coverage trending down while PR volume trends up is a specific bad pattern, and it is hard to spot without tracking it deliberately.
+- **Deployment frequency and change failure rate.** The DORA pair that held flat in the Faros data is still the most reliable throughput signal at the team level.
+
+These metrics do not care whether AI is being used. They care about outcomes. If AI is helping, these improve. If AI is creating reviewer backlog faster than it helps individual output, these stall or regress. Either way, the signal is real.
+
+## Where the Value Actually Is
+
+None of this says AI coding tools do not work. They work, visibly, for individual developers on individual tasks. What the data says is that individual output was never the constraint, and optimizing the non-constraint does not move the constraint. A team using AI coding tools well is a team that has also invested in the specification and verification layers, because those are the pieces AI cannot compress.
+
+Stern proposes a grey-box model. Humans own specification (writing precise requirements, architectural decisions, system instructions) and verification (reviewing against evidence, running the test suite, validating behavior under load). AI takes implementation. The shift is from developer-as-writer to developer-as-intent-definer-and-auditor, which is actually a harder job and a more interesting one.
+
+The teams getting real leverage from AI coding tools in 2026 are the ones that have noticed where the bottleneck moved and restructured around that, not the ones still measuring success by how many PRs the tools produce.

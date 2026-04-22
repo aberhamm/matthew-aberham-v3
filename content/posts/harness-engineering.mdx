@@ -1,0 +1,71 @@
+---
+title: "The Model Is the Commodity. The Harness Is the Moat."
+description: "Model quality has converged across Claude, GPT, and Gemini. What separates reliable production agents now is the system built around the model, what the industry is calling the agent harness."
+date: 2026-04-09
+published: true
+tags: ['AI', 'Agents', 'Engineering']
+---
+
+![A blue safety harness, a visual stand-in for the structure around the agent](/posts/23_harness_engineering.jpg)
+
+**Date:** April 2026
+**Sources:** [Anthropic Engineering — Effective Harnesses for Long-Running Agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents), [Red Hat Developer — Harness Engineering](https://developers.redhat.com/articles/2026/04/07/harness-engineering-structured-workflows-ai-assisted-development)
+
+Claude, GPT, Gemini. On the same task with the same information, they now perform within noise of each other. Teams producing meaningfully more reliable agents in production are not the ones with better prompts. They are the ones with better systems built around the model. That system now has a name in the industry: the **agent harness**, and both Anthropic and OpenAI have published engineering content in the past month arguing that building the harness is the work now, not tuning the model.
+
+The phrase captures a real shift, and it sits on top of two prior phases that most practitioners have already lived through.
+
+## Three Phases of AI Engineering
+
+**Prompt engineering (2022 through 2024).** The work was writing a better single instruction. Imagine telling an intern who just walked in with no context exactly what you want: "Write a 500-word article in a casual tone about the top five Pokemon, use bullet points, avoid jargon." The more specific the prompt, the better the one-time output. A great prompt with the wrong information still fails, and every new task needs its own optimized message.
+
+**Context engineering (2025).** The realization that a great prompt with the wrong information attached still fails, so the work shifted to assembling what the model sees. Documents, memory, retrieved results, tool definitions, conversation history, delivered at the right moment. Back to the intern: instead of only telling them what to write, you hand them the client brief, the brand voice guide, the competitor research, and the existing articles before they start. The information environment is now as much of the lever as the instruction.
+
+**Harness engineering (2026).** Where context engineering curates what the agent knows, harness engineering defines how the agent is allowed to work. The constraints, tools, feedback loops, verification systems, and persistent structure that govern its behavior across a whole task or session, not just a single prompt. The intern analogy finishes here. You are no longer writing a better email or packing a better briefing folder. You are designing the office. Approval workflows. Linting rules that catch mistakes before they ship. A reviewer who looks at every draft. Git commits that preserve state between sessions. An onboarding checklist that grounds every new session in what was already done.
+
+The core shift in one sentence, credited to the Epsilla team: every time you discover an agent has made a mistake, you engineer a system-level solution so it can never make that mistake again. A prompt is a suggestion. A harness constraint is a rule the system enforces regardless of what the agent decides.
+
+## What a Harness Actually Contains
+
+The practitioner community has converged on six elements that every production harness needs.
+
+- **Human-in-the-loop controls.** Defined checkpoints where a human has to approve before the agent proceeds. Not "the agent pings you when confused." Explicit gates built into the flow.
+- **Filesystem access management.** Explicit grants of what the agent can read, write, and delete. Never implicit trust.
+- **Tool call orchestration.** Which tools are available at which stages. Vercel reported that removing 80% of an agent's tools improved results: fewer options reduced confusion. The harness is where you scope that.
+- **Sub-agent coordination.** How orchestrator agents hand off to specialist agents and how results get collected, verified, and merged.
+- **Prompt preset management.** Standardized, versioned system prompts rather than ad hoc instructions. Treat the system prompt as code.
+- **Lifecycle hooks.** Events the harness can intercept before and after every tool call. Claude Code's `PreToolUse` and `PostToolUse` hooks are a direct implementation.
+
+Every one of these is a place a constraint can live. The harness is the sum of them.
+
+## Three Patterns You Can Steal
+
+Three concrete patterns shipped in the last month, each making the abstract concrete.
+
+**Anthropic's dual-agent framework for long-running tasks.** Anthropic splits any multi-session task into two roles. An Initializer Agent runs once and creates the foundational infrastructure: an `init.sh` script, a `claude-progress.txt` tracking file alongside git history, and an initial commit. Then a Coding Agent runs in every subsequent session, reading the progress file, reviewing git history, running basic functionality tests, then picking the single next priority feature to implement. Commits after every meaningful increment. The agent always leaves a documented state its successor can pick up without re-reading everything. The rule Anthropic bakes into this harness, not the prompt: it is unacceptable to remove or edit tests. That is a system-enforced guarantee, not a request.
+
+**OpenAI's AGENTS.md pattern.** OpenAI's Codex team requires every repository where an agent operates to contain an `AGENTS.md` file: machine-readable instructions telling the agent how that specific codebase works. Where tests live, what conventions to follow, what tools are available, what to never touch. The agent gets reliable repo-specific orientation on every session without relying on a prompt to re-explain it. OpenAI has used this pattern to ship an internal product with over a million lines of code and zero lines manually written by humans.
+
+**Red Hat's Repository Impact Map.** Red Hat's engineering team published a two-phase harness this month. Phase one: before any code is written, the agent scans the actual codebase using LSP and MCP servers to produce a Repository Impact Map, a grounded analysis of which files and symbols the change will affect. A human reviews the map before implementation starts. Phase two: every work unit follows a rigid template with specific file paths (not guesses), references to existing symbols like `SbomService::export_json()`, and explicit acceptance criteria. The constraint is the point. The more you constrain the solution space upfront, the more predictable the output becomes.
+
+All three patterns share the same move: take something the agent used to get wrong, and engineer a structure that makes getting it wrong impossible rather than unlikely.
+
+## Why This Is the Work Now
+
+The 86% of agentic AI projects that never reach production usually fail on the same five operational axes: integration complexity, output quality at volume, missing monitoring, unclear ownership, insufficient domain training data. Each one is a harness problem. You cannot fix missing monitoring by switching to a better model. You cannot fix unclear ownership with a cleverer prompt. These are system-design problems, and the harness is where system design for agents lives.
+
+A second signal: Manus rewrote their harness five times in six months using identical models and saw reliability improvements with each iteration. The model did not change. The system around it did. The result changed.
+
+Put those together and the framing is clear. Model quality is largely a convergence problem now; every major lab ships something close enough to every other lab on the same task. What varies is whether the infrastructure around the model is disciplined enough to catch the failures that are going to happen regardless of how good the model is on average.
+
+## What to Do This Week
+
+Three concrete moves for anyone building agentic features now.
+
+For n8n workflows, treat the workflow definition as a partial harness. It already enforces execution order, error paths, and tool availability. The next maturity step is adding evaluation nodes that check agent outputs before they trigger downstream actions, and maintaining a persistent state file the workflow reads at the start of every run.
+
+For Claude Code or Cursor on multi-session work, adopt the Initializer + Coding Agent + progress file pattern. A `progress.md` committed to the repo, an `AGENTS.md` with repo-specific rules, and a convention that every session starts by reading both. Two low-effort files that pay off the first time a session runs out of context halfway through a task.
+
+For client architecture conversations about agentic AI, the vocabulary shift matters. When a client asks how to make sure the agent does not do something wrong in production, the answer is no longer prompt iteration. It is harness design: constraints, hooks, evaluators, state files, lifecycle controls. That reframes the conversation from guardrails as governance into harness as system design, which is consulting territory.
+
+The developer's job is shifting. It used to be writing a prompt that makes the agent do the right thing. It is becoming designing a system that makes it impossible for the agent to do the wrong thing. That is not a small shift, and the teams internalizing it early are the ones who will still be shipping agentic features in twelve months.
