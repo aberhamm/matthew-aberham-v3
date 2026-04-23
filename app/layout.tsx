@@ -34,14 +34,14 @@ const nhass = localFont({
 export const metadata: Metadata = {
   title: 'Matthew Aberham',
   description: 'Solutions Architect and Full-Stack Engineer.',
-  metadataBase: new URL('https://matthewaberham.com'),
+  metadataBase: new URL('https://www.matthewaberham.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://matthewaberham.com',
+    url: 'https://www.matthewaberham.com',
     title: 'Matthew Aberham',
     description: 'Solutions Architect and Full-Stack Engineer.',
     siteName: 'Matthew Aberham',
