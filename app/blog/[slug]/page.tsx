@@ -46,7 +46,8 @@ export async function generateMetadata({
   }
 
   const url = `/blog/${post.slug}`;
-  const ogImage = `/api/opengraph?title=${encodeURIComponent(post.title)}`;
+  const ogImage =
+    post.heroImage ?? `/api/opengraph?title=${encodeURIComponent(post.title)}`;
 
   return {
     title: `${post.title} | Matthew Aberham`,
