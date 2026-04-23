@@ -45,9 +45,39 @@ export async function generateMetadata({
     };
   }
 
+  const url = `/blog/${post.slug}`;
+  const ogImage = `/api/opengraph?title=${encodeURIComponent(post.title)}`;
+
   return {
     title: `${post.title} | Matthew Aberham`,
     description: post.description,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      type: 'article',
+      url,
+      title: post.title,
+      description: post.description,
+      siteName: 'Matthew Aberham',
+      publishedTime: new Date(post.date).toISOString(),
+      authors: ['Matthew Aberham'],
+      tags: post.tags,
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.description,
+      images: [ogImage],
+    },
   };
 }
 
