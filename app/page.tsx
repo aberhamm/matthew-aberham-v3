@@ -47,9 +47,9 @@ export default function Home() {
             </span>
 
             <span className="block">
-              I specialize in architecting high-performance applications,
-              crafting polished front-end experiences, and integrating AI-driven
-              solutions for platforms that serve millions of users.
+              I specialize in architecting AI systems and multi-tenant
+              platforms, building full-stack infrastructure from the database
+              schema to the UI, for products that serve millions of users.
             </span>
 
             <span className="block">
