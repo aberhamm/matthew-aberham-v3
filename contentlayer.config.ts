@@ -75,13 +75,19 @@ export const Post = defineDocumentType(() => ({
     published: { type: 'boolean', required: true },
     featured: { type: 'boolean', required: false },
     featuredOrder: { type: 'number', required: false },
-    heroImage: { type: 'string', required: false },
     tags: { type: 'list', of: { type: 'string' }, required: false },
   },
   computedFields: {
     slug: {
       type: 'string',
       resolve: (doc) => doc._raw.sourceFileName.replace(/\.mdx$/, ''),
+    },
+    heroImage: {
+      type: 'string',
+      resolve: (doc) => {
+        const match = doc.body.raw.match(/!\[[^\]]*\]\(([^)]+)\)/);
+        return match ? match[1] : '';
+      },
     },
   },
 }));
