@@ -1,0 +1,41 @@
+---
+title: 'Radar: Agentic Codebase Auditor'
+description: 'An AI agent that autonomously audits codebases against structured goals. 23 deterministic tools, dual-model cost routing, evaluation harness with SHA-256 fingerprinting, and CI/CD integration. $0.74 per goal-run.'
+date: 2026-05-01
+published: true
+technologies: ['TypeScript', 'Node.js', 'Claude API', 'GitHub Actions', 'Azure DevOps']
+---
+
+Radar autonomously audits codebases against structured goal definitions. Point it at a repository with a set of audit goals, and it investigates the codebase, generates scored findings with evidence, and outputs a structured report.
+
+## Architecture
+
+- **23 deterministic tools** with typed schemas: file reading, AST traversal, dependency graph queries, pattern matching, compliance checks
+- **Dual-model cost routing:** a reasoning model (Claude Sonnet) handles investigation and analysis; a cheaper model (Claude Haiku) handles report generation and formatting. Per-task routing, not per-session
+- **Structured-output validation:** every finding is validated against a typed schema before it enters the report. No free-form LLM output reaches the consumer
+- **1,200-line specification:** the agent's behavior contract, written before implementation
+
+## Evaluation Harness
+
+The evaluation layer treats agent output like test output:
+
+- **Per-finding SHA-256 fingerprints** for deterministic deduplication across runs
+- **Regression-style runs** against fixture codebases with known findings
+- **Quality-gate thresholds** that block releases if regression scores drop below configured baselines
+- **SARIF output** for integration with GitHub Code Scanning and Azure DevOps
+
+## CI/CD Integration
+
+Radar runs as a step in GitHub Actions and Azure DevOps pipelines. The quality gate enforces a minimum score threshold: if the audit finds regressions or new violations above the configured severity, the pipeline fails. Findings upload as SARIF for inline annotation in pull request reviews.
+
+## Expanding Tool Coverage
+
+Radar is under active iteration:
+
+- Dependency scanning across package ecosystems
+- Code-pattern analysis for anti-patterns and architectural drift
+- Compliance checks against configurable rule sets
+
+## Cost
+
+$0.74 per goal-run at current model pricing, with 3-tier context compression to keep token usage predictable.

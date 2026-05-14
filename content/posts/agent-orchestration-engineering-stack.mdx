@@ -1,0 +1,62 @@
+---
+title: "How I Wired AI Agents Into My Engineering Stack"
+description: "A Docker-based MCP gateway connects financial data, web scraping, workflow automation, and browser agents into a unified tool surface. The architecture and the patterns that make agent-to-service orchestration practical for a solo engineer."
+date: 2026-05-14
+published: true
+tags: ['AI', 'Agents', 'Engineering', 'Developer Tools']
+---
+
+![Blue wires connected together in a network switch](/posts/agent-orchestration-stack.jpg)
+
+I connected LLM agents to the services I already run: financial data, web scraping, workflow automation, browser agents, knowledge management. This post covers the infrastructure that makes that work and what it changed about how I build.
+
+## Agents Without Services Are Just Chat
+
+A standalone LLM agent can reason about text. It can write code, answer questions, summarize documents. But it cannot check a stock price, trigger a deployment workflow, scrape a webpage, or query a database unless you give it tools that connect to those services.
+
+The naive version of this is wiring up each service individually, per-agent, per-project. That gets messy fast. You end up with API keys scattered across config files, different agents with different subsets of your tooling, and no central place to manage what has access to what.
+
+The better version is a gateway: one integration layer that exposes multiple services as tools, with a single protocol that any LLM client can speak.
+
+## MCP as the Integration Protocol
+
+Model Context Protocol (MCP) is the standard that makes this practical. An MCP server exposes a set of tools with typed schemas. An MCP client (any LLM agent that supports the protocol) discovers those tools and calls them with structured arguments. The server handles execution and returns structured results.
+
+I run a Docker-based MCP gateway that currently exposes six service categories through a single entry point:
+
+- **Financial data and trading** (Alpaca, live and paper accounts): portfolio positions, market data, order management
+- **Search and research** (Perplexity): web search with source attribution, grounded in real-time data
+- **Workflow automation** (n8n): 30+ operational workflows, from data pipelines to monitoring to notification routing
+- **Web scraping** (custom Django platform): 20 domain-specific scrapers with plugin architecture, 5 specialized worker pools, checkpoint/resume for long-running jobs
+- **Knowledge management** (Notion): reading and writing to structured databases and pages
+- **Browser automation** (Playwright): navigating pages, filling forms, taking screenshots, extracting data
+
+Each service runs in its own container. The gateway manages authentication, routing, and access scoping. Adding a new service means adding a container and registering its tool definitions. The LLM client never needs to know the implementation details of any individual service.
+
+## Radar: The Agent That Uses the Stack
+
+Radar is the clearest example of what this infrastructure enables. It is an agentic codebase auditor that I built from a 1,200-line spec: 23 deterministic tools, dual-model routing (a reasoning model for investigation, a cheaper model for reporting), structured-output validation, and an evaluation harness with per-finding SHA-256 fingerprints and regression runs against fixture codebases.
+
+It is under active development, with expanding tool coverage across dependency scanning, code-pattern analysis, and compliance checks. I operate it against real codebases. The evaluation harness runs as part of CI, with quality-gate thresholds that block a release if regression scores drop.
+
+Radar sits on top of the same MCP gateway infrastructure. It calls the same scraper tools to pull dependency data, the same browser tools to verify live endpoints, the same Notion tools to log findings. The agent and the services compose because they speak the same protocol.
+
+## Multi-Provider LLM Routing
+
+One architectural decision that paid off early: provider-agnostic LLM integration. Radar uses Anthropic models for investigation and reporting. The scraper platform uses whichever model fits the extraction task. Research workflows route through different providers based on the question type.
+
+The practical benefit is cost and capability matching. A task that needs deep reasoning gets a more capable (and more expensive) model. A task that needs fast structured extraction gets a cheaper one. The routing logic lives in the application layer, not in the model configuration. When a new model launches or pricing changes, I update routing rules, not application code.
+
+## n8n as the Operational Backbone
+
+n8n is a self-hosted workflow automation platform. I run it at a custom domain with 30+ workflows that handle operational tasks: scheduled data pulls, webhook receivers, notification routing, health checks, and pipeline orchestration.
+
+Exposing n8n through the MCP gateway means any agent can trigger an operational workflow as a tool call. A research agent can kick off a data collection pipeline. A monitoring agent can trigger an alert workflow. The automation layer is not separate from the agent layer; they are the same system.
+
+## The Practical Difference
+
+Tasks that used to require manual orchestration across multiple services now run as single agent conversations. A research task that required visiting six sources, aggregating data, and writing a summary happens in one session because the agent has tool access to all six sources. The architecture removed the friction that made agent-assisted work impractical for real tasks. When the agent can actually reach your services, the conversation stops being hypothetical.
+
+## Where This Is Heading
+
+The current gateway is built for a single user (me). The next layer is multi-user access control: scoped tool permissions per agent, audit logging for every tool call, and rate limiting at the gateway level rather than per-service. The goal is infrastructure that a small team could use.

@@ -1,0 +1,48 @@
+---
+title: "Uber Burned Through Its Annual AI Budget in Four Months"
+description: "When AI coding tools work at full engineering-org scale, the cost center doesn't shrink. It changes shape. Uber, NVIDIA, and a four-person startup show three versions of the same inversion."
+date: 2026-05-14
+published: true
+tags: ['AI', 'Engineering', 'Developer Tools']
+---
+
+![A gray GE volt meter mounted on a wall](/posts/ai-cost-inversion.jpg)
+
+**Date:** April-May 2026
+**Sources:** [Axios — The AI Cost Inversion](https://www.axios.com/2026/04/ai-enterprise-cost-inversion), [Anthropic — Code with Claude Rate Limit Changes](https://docs.anthropic.com/en/docs/about-claude/models)
+
+The implicit pitch behind every enterprise AI rollout since 2023 has been: AI saves money on headcount. Axios ran a piece in April naming the inversion that has been building in the data. At companies running agentic workloads at full engineering-org scale, AI is not replacing a labor cost. It is a new line item that can exceed the one it was supposed to replace.
+
+## Uber, NVIDIA, and a Four-Person Startup
+
+Uber rolled out Claude Code to their engineering team in December. Usage doubled by February. They burned through their entire annual AI budget by April, four months into a twelve-month plan. They are spending $500 to $2,000 per engineer per month in API costs. 95% of their engineers use AI tools monthly, and 70% of committed code comes from AI. Against $3.4 billion in annual R&D spend, this still registered as a budget crisis.
+
+Bryan Catanzaro, NVIDIA's VP of Applied Deep Learning, said on the record that compute costs for his team far exceed the cost of the employees. That is from the company that sells the compute, talking about its own internal teams.
+
+Swan AI, a Tel Aviv startup with four engineers, posted a $113,000 monthly Anthropic bill and framed it as a competitive moat. Their argument: they are scaling with intelligence, not headcount. The high bill is the strategy, not a problem to solve.
+
+## The Budget Model Assumed Low Adoption
+
+Uber's engineers are not wasting API calls on novelty. 70% of committed code is AI-assisted. The tools are doing what they were sold to do. The cost structure is just not the one the budget assumed.
+
+Traditional engineering capacity planning treats headcount as the primary variable. You hire N engineers at $X loaded cost each. AI coding tools were pitched as a way to get more output from N, or to keep output constant while reducing N. Both framings assume the tool cost is trivially small relative to the headcount cost.
+
+At Uber's scale (thousands of engineers, $500-$2K per month per engineer), the AI line item is $6M to $24M per year. Not trivially small. Not replacing headcount either, because the [same METR data](https://metr.org/blog/2026-02-24-uplift-update/) that shows experienced developers are roughly break-even on speed also shows they refuse to work without the tools. The cost is additive, not substitutive.
+
+## The Rate Limit Ceiling Just Moved Up
+
+On May 6, Anthropic doubled five-hour rate limits on Claude Code across Pro, Max, Team, and seat-based Enterprise tiers. Peak-hours throttling on Pro and Max is gone entirely. Opus API rate limits raised "considerably."
+
+For enterprise teams already at budget, doubled rate limits mean doubled potential spend. Companies that budgeted for a usage plateau are now looking at a second doubling curve.
+
+## What This Means for Capacity Planning
+
+Engineering capacity planning for 2027 looks different from the 2024 pitch.
+
+1. **AI is a variable cost that scales with adoption.** Headcount is relatively fixed and predictable. API usage doubles when the tools work. Budget for the adoption curve, not the pilot.
+
+2. **The savings case requires a headcount decision.** If you add AI tools and keep headcount constant, total engineering cost goes up. The only way to realize savings is to reduce headcount, which most companies are not doing: [Citadel's SWE job posting data](https://www.citadelsecurities.com/perspectives/dev-hiring-trends-2026/) shows postings up 11% year over year. Amazon committed to 11,000 SWE interns in 2026 after reversing course on AI-driven reductions.
+
+3. **Token efficiency is an engineering metric now.** Swan AI's $113K monthly bill works for a four-person startup because the alternative is hiring 10 more engineers. Uber's bill is a crisis because 95% adoption across thousands of engineers produces API spend that exceeds headcount savings. The difference is per-engineer-per-month efficiency, and nobody has a dashboard for it yet.
+
+The tools work. The budget model that justified buying them does not. That is a procurement and planning problem, and it is going to land on engineering leadership before it lands on vendors.
