@@ -1,0 +1,56 @@
+---
+title: "Cloudflare Cut 20% of Its Workforce After Record Revenue, and the Bench Player Is the Casualty"
+description: "Cloudflare's CEO said AI made employees 100x more productive and laid off 20% of the company. The structural shift is the end of the bench player, the institutional-knowledge backup hire that companies kept as insurance. Jevons' Paradox suggests efficiency gains will expand the scope of justifiable software, not shrink the workforce."
+date: 2026-05-14
+published: true
+tags: ['AI', 'Engineering', 'Career']
+---
+
+![A black leather bench on a tiled floor in a modern office](/posts/jevons-paradox-bench-player.jpg)
+
+**Date:** May 2026
+**Sources:** [Cloudflare Q1 2026 Earnings Call](https://cloudflare.net/news/news-details/2026/Cloudflare-Announces-First-Quarter-2026-Financial-Results/), [@atmoio, Jevons' Paradox and the Bench Player](https://www.youtube.com/@atmoio)
+
+Cloudflare posted $639 million in quarterly revenue, the best quarter in the company's 16-year history, and laid off roughly one in five employees. CEO Matthew Prince said on the earnings call that employees had become "100x more productive" and compared the shift to "going from a manual to an electric screwdriver."
+
+The 100x number is not supported by any published measurement. [METR's most recent data](/blog/ai-productivity-paradox) on experienced developers shows a -4% change in task completion speed, with a confidence interval that crosses zero. Prince is either measuring something other than individual output or doing what most executives do when they have a number that justifies a decision they already made.
+
+## The Bench Player
+
+For 30 years, companies hired redundancy into their engineering organizations. You had your star players, the people who shipped the critical systems and held the deepest context. And you had a bench: engineers who carried institutional knowledge, went through onboarding, attended the standups, and mostly waited. Their job was insurance. If a star player quit or burned out, someone could step in without a six-month ramp.
+
+That insurance was expensive. A bench engineer at Cloudflare costs $200K to $400K fully loaded. Multiply that across every team that kept one or two extra people for continuity, and you are looking at a meaningful percentage of engineering headcount doing coverage work, not product work.
+
+Prince's framing of "support roles" was not about customer service. It was about this bench. The argument is that AI has made the bench unnecessary. If your senior engineer quits tomorrow, you open Claude Code, feed it the codebase context, and bridge the gap while you hire a replacement. The replacement ramps faster because the tooling compresses onboarding.
+
+I think this is mostly right about what changed and partly wrong about the consequences. The bench player role is genuinely ending. Companies will not keep paying $300K for insurance when a $200/month tool covers 60% of the same risk. But "we just need fewer people" only holds if you assume the work stays constant. It does not.
+
+## Jevons' Paradox and the Long Tail
+
+William Stanley Jevons was a Victorian economist who noticed something counterintuitive in 1865. When James Watt's steam engine made coal usage more efficient, total coal consumption went up, not down. Efficiency did not reduce demand. It made coal cheap enough to use in applications that were previously uneconomical, and the new demand overwhelmed the savings.
+
+People cite Jevons' Paradox to argue that AI will increase demand for software engineers. That is the hopeful reading, and it is too vague to be useful. The more specific version: AI unlocks the long tail of software that companies wanted but could never justify building.
+
+Every engineering organization has an infinite backlog of internal tools that never compete against the core product roadmap. The monitoring dashboard that would save the on-call team 10 hours a week. The Slack bot that automates a manual compliance workflow. These projects die in prioritization because they require two engineers for three weeks and the ROI does not clear the bar against revenue features.
+
+When building an internal tool drops from two engineer-weeks to two engineer-hours, the backlog starts clearing itself. That is Jevons' Paradox applied to software: the efficiency gain does not reduce the number of engineers. It makes a category of previously unjustifiable work suddenly viable.
+
+I see this in my own setup. My MCP gateway, n8n workflow automations, and scraper platform exist because the per-tool cost dropped below the threshold where I needed to justify them against other work. A year ago, each of those would have been a weekend project I never started. Most companies have not figured out how to take advantage of this yet.
+
+## The Marketing Claim
+
+The video that surfaced this Cloudflare analysis argues that the balance for engineers has shifted from roughly 70% skill and 30% marketing to 30% skill and 70% marketing. The advice is to position yourself as an "AI-native operator" rather than someone who "can use AI but also codes by hand."
+
+I think this is overstated, but the direction is right for a specific population. At the senior and principal level, the assumption is already that you can code. Nobody is hiring a Staff Engineer because they write clean for-loops. The differentiation at that level has always been closer to 50/50 between technical depth and communication (architecture docs, RFCs, stakeholder alignment, hiring signal). AI shifts that ratio further toward the communication side, because the implementation gap between a strong and average engineer narrows when both have the same tooling.
+
+For engineers in the first five years of their career, skill still dominates. You cannot orchestrate what you do not understand. The marketing-first framing is dangerous advice for someone who has not yet built the judgment that makes AI output worth trusting.
+
+The practical version: a personal site with published work, a GitHub profile that shows real projects, and the ability to articulate what you build and why. Those always mattered. They matter slightly more now because hiring managers are trying to distinguish between engineers who use AI as a force multiplier and engineers who use it as a substitute for understanding.
+
+## Where the Demand Goes
+
+Cloudflare's layoffs, [Uber's budget crisis](/blog/ai-cost-inversion-uber-budget), and the [productivity paradox data](/blog/ai-productivity-paradox) all describe the same transition. The tools work. They do not save money (Uber). They do not move organizational throughput metrics (Faros AI, METR). And they are restructuring who companies need and why (Cloudflare).
+
+The bench player era is ending. Jevons' Paradox says the work that fills the gap will be the long tail of internal tooling and automation that was never worth building before. Citadel's data showing SWE postings up 11% year over year, and Amazon committing to 11,000 SWE interns after reversing their AI-replacement stance, suggest the market agrees: the demand curve is shifting, not shrinking.
+
+The engineers who come out ahead are the ones building the systems that clear that long-tail backlog, not the ones optimizing their LinkedIn positioning to look AI-native.

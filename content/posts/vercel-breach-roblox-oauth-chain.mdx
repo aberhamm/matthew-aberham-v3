@@ -1,0 +1,62 @@
+---
+title: "A Roblox Cheat Script Led to a Two-Month Breach Inside Vercel"
+description: "An employee at Context.ai downloaded auto-farm scripts for Roblox on a device with access to company systems. The malware that came with it eventually reached Vercel's internal environment through an OAuth token chain, and the attacker sat there for two months before detection."
+date: 2026-05-14
+published: true
+tags: ['Security', 'OAuth', 'Supply Chain']
+---
+
+![Grey metal chain links in close-up](/posts/vercel-breach-oauth.jpg)
+
+**Date:** April-May 2026
+**Sources:** [Vercel Security Bulletin](https://vercel.com/blog/postmortem), [Context.ai Incident Disclosure](https://context.ai/security)
+
+Last Sunday, Vercel, the company behind Next.js, SWC, and Turbopack, published a security bulletin describing a breach that lasted approximately two months before detection. The attack chain started with consumer-grade malware and ended inside Vercel's internal environments and environment variables.
+
+## The Attack Chain
+
+A Context.ai employee downloaded Roblox auto-farm scripts on a device that also had access to company systems. The scripts carried malware that exfiltrated their Google Workspace credentials. Context.ai, an AI observability platform, runs on Google Workspace for corporate email. Those credentials gave the attacker access to support@context.ai and from there into Context.ai's internal infrastructure.
+
+Separately, a Vercel employee had signed up for Context.ai using their enterprise Google Workspace account. During the OAuth consent screen, they clicked Allow-All, granting Context.ai broad access to their Google Workspace session. The attacker used Context.ai's existing OAuth token to take over that Vercel employee's Google Workspace session, which provided a path into Vercel's internal environments.
+
+The attacker had approximately two months of dwell time before Vercel detected the intrusion.
+
+## Context.ai Knew and Did Not Revoke Tokens
+
+Context.ai detected and contained unauthorized access to its own AWS environment in March, roughly three to four weeks before Vercel's public disclosure. They contained the cloud intrusion. They did not revoke OAuth tokens that had already been issued to enterprise customers, and they did not notify those customers.
+
+The attacker's access to Vercel continued because the tokens stayed valid.
+
+Containing your own breach is not the same as containing the blast radius. OAuth tokens are bearer credentials: whoever holds them can use them. If you detect an intrusion into your infrastructure and you have issued OAuth tokens that grant access to customer environments, revoking those tokens is not optional cleanup. It is containment.
+
+## The "Sensitive" Flag Is Not a Containment Boundary
+
+Vercel's official guidance tells customers to rotate environment variables that contain secrets and are not marked "sensitive." The sensitive flag in Vercel's platform prevents reads through the API and dashboard after initial creation. That protection is real for the narrow case of API-level exfiltration.
+
+It does not protect against an attacker with deployment-level scope who sat inside the environment for two months. An attacker with that access could deploy a payload that reads environment variables at runtime, side-channel secrets through build logs, or push modified build artifacts. The sensitive flag is an access control on one surface. It is not a boundary an attacker with deployment access needs to respect.
+
+The correct posture: assume every environment variable stored in Vercel, sensitive-flagged or not, is compromised. Rotate all of them.
+
+## npm Tokens Were Exposed
+
+Vercel publishes Next.js, SWC, and Turbopack to npm. Guillermo Rauch, Vercel's CEO, confirmed that no malicious npm packages were pushed during the dwell period. npm and GitHub reached the same conclusion independently.
+
+That is the good outcome, and it required verification from three separate organizations. The bad outcome was plausible: npm publish tokens were among the exposed credentials. Information from the attack is being sold on BreachForums, with the seller specifically advertising npm tokens. The difference between "tokens were exposed but not used for malicious publishes" and "a compromised Next.js package shipped to millions of projects" was attacker intent, not architectural defense.
+
+## The OAuth Scope Problem
+
+The root cause is not novel malware or a sophisticated exploit chain. A Roblox cheat download carried commodity credential-stealing malware. That malware reached an infrastructure vendor's OAuth scope because a single productivity-tool signup clicked Allow-All on a consent screen.
+
+OAuth consent screens present scope requests as a list of checkboxes. Most users, including engineers at infrastructure companies, click through them the same way they click through cookie banners. The security model assumes the user reads and evaluates each scope. The reality is that consent fatigue produces Allow-All as the default behavior.
+
+Google Workspace OAuth tokens granted through an Allow-All consent can include email access, calendar access, Drive access, and session-level authentication. When a third-party vendor holds that token, the vendor's security posture becomes part of your security perimeter. When that vendor gets breached and does not revoke tokens, the blast radius extends to every customer who granted broad OAuth scope.
+
+## What to Do About It
+
+**Audit third-party OAuth grants now.** Google Workspace Admin Console surfaces every third-party app with OAuth access and the scopes each app holds. Most organizations have dozens of grants they have forgotten about. Revoke anything that is not actively in use. For grants that remain, verify that each scope is necessary for the integration's function.
+
+**Implement scope minimization as policy.** OAuth integrations should request the minimum scopes required for their function. "Sign in with Google" for authentication does not need Drive access or email read permissions. Workspace admins can restrict which apps are allowed and which scopes they can request, pre-approving specific apps and blocking everything else.
+
+**Treat vendor breach disclosures as your own incident.** When a vendor you have granted OAuth access to discloses a breach, the response is not to wait for their remediation timeline. Revoke the token immediately, assess what access that token granted, and rotate any credentials the token could have reached. Context.ai contained their own cloud intrusion and considered the job done. Every customer who had granted them OAuth access was still exposed.
+
+The OAuth consent screen was designed for a world where users would carefully evaluate each permission request. That is not how anyone uses them. Until the authorization model catches up to actual human behavior, the gap between granted scope and intended scope is an attack surface that commodity malware can reach.
