@@ -1,0 +1,45 @@
+---
+title: "The Shai-Hulud Worm Is Now Open Source, and npm's Security Model Has No Good Answer"
+description: "A supply chain worm hit 172 packages with 518M downloads, then its creators open-sourced the code. The npm trust model is structurally unprepared."
+date: 2026-05-15
+published: true
+tags: ['Security', 'Supply Chain', 'npm']
+---
+
+![Chain links under tension against a dark background](/posts/shai-hulud-open-sourced-structural-crisis.jpg)
+
+**Date:** May 2026
+**Sources:** [OX Security disclosure](https://ox.security), [StepSecurity analysis](https://stepsecurity.io), [npm v11.10.0 release notes](https://github.com/npm/cli/releases)
+
+> **Security disclosure:** Open-sourced supply chain worm / registry poisoning at scale
+
+On May 13, a threat group called TeamPCP published the full source code of their Mini Shai-Hulud supply chain worm to GitHub. MIT license, deployment instructions included. OX Security, a supply-chain security firm, confirmed the repos were live for at least 12 hours before GitHub removed them. By then, the code had already been forked.
+
+This came two days after wave four hit 172 packages across npm and PyPI with a combined 518 million cumulative downloads: TanStack's 42 packages, Mistral AI's SDK, UiPath's 65-package namespace, and OpenSearch. By volume, the largest coordinated registry poisoning event on record. The open-sourcing changes the threat model. Waves one through four required a capable, coordinated group. Wave five onward requires a GitHub account and a README.
+
+## How the TanStack Compromise Worked
+
+The TanStack attack stacked three GitHub Actions weaknesses. The attacker forked TanStack Router and opened a PR against a repository using a `pull_request_target` trigger, which runs fork-submitted code with the base repository's permissions. That build poisoned the shared dependency cache. When a legitimate contributor later merged a real PR, the release workflow consumed the poisoned cache, and the malware extracted the runner's OIDC (OpenID Connect) token to publish directly to the `@tanstack` npm scope. The result: malicious packages with valid SLSA (Supply-chain Levels for Software Artifacts) Build Level 3 provenance attestations, because they *were* built by the trusted pipeline. Per StepSecurity, a build-attestation verification firm, the first documented case of validly attested malicious npm packages.
+
+## Novel Attack Vectors
+
+Wave four introduced two persistence mechanisms that go beyond typical supply chain malware.
+
+**Claude Code persistence.** The worm plants SessionStart hooks in `.claude/settings.json` that re-execute the payload every time a developer opens a Claude Code session. This survives package removal. The hook lives outside the package graph; `npm audit` does not catch it, dependency scanners do not flag it, and `git status` will not surface it unless the settings file is tracked. No previous supply chain attack had used AI coding agent configuration as a persistence mechanism, and the technique is now documented and public.
+
+**Dead-man's-switch home directory wiper.** The malware installs a daemon that polls whether its exfiltrated GitHub token has been revoked. If revocation is detected, it executes `rm -rf ~/`. The standard incident response of "revoke all credentials immediately" triggers destruction of the home directory. You need to isolate the machine from the network first, then rotate credentials from a separate device.
+
+## The Cooldown Paradox
+
+The security community's response has converged on cooldown periods: wait before pulling new package versions. StepSecurity, Datadog (an infrastructure monitoring platform), and npm itself (via `--minimum-release-age` in v11.10.0) all ship cooldown tooling now. The logic is sound; most malicious packages are detected within 24 to 72 hours, so a 7-day wait filters out nearly all of them.
+
+The problem is that cooldowns directly contradict the other imperative: patch vulnerabilities quickly. You cannot simultaneously say "never install a package younger than 7 days" and "patch critical CVEs (Common Vulnerabilities and Exposures) within 24 hours." The open-sourcing makes it worse; more contributors producing more variants means the detection window may stretch past the cooldown threshold.
+
+## Why This Matters for Developers
+
+- **Audit IDE config files now.** Check `.claude/settings.json` for SessionStart hooks you did not add. If you find unfamiliar entries, replace the entire file from a known-clean source.
+- **Isolate before revoking.** If you suspect compromise, disconnect the machine from the network before rotating credentials. The dead-man's switch punishes the standard response.
+- **Review your GitHub Actions cache setup.** If your repositories combine `actions/cache` with `pull_request_target` triggers, you are vulnerable to the same vector that hit TanStack.
+- **Decide on a cooldown policy and write it down.** npm's `--minimum-release-age`, StepSecurity's CI check, or pinned versions with manual audits. Make the tradeoff explicit per project.
+
+The registry security model was designed for typosquatting and dependency confusion. The threat has evolved to pipeline compromise, valid-attestation abuse, and persistence outside the package graph. Every team is making this tradeoff whether they document it or not.

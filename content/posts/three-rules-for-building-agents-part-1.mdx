@@ -1,0 +1,46 @@
+---
+title: "Three Rules for Building Agents (and a Checklist You Can Use Monday)"
+description: "Anthropic's three-rule framework for deciding when to build agents, how to keep them simple, and how to debug them by thinking from inside the context window."
+date: 2026-05-15
+published: true
+tags: ['AI', 'Agents', 'Architecture']
+---
+
+![Blue industrial robotic arm on a factory assembly line](/posts/three-rules-for-building-agents-part-1.jpg)
+
+**Date:** May 2026
+**Source:** Barry Zhang, "Building Effective Agents," AI Engineer Summit (based on Anthropic's research post)
+
+Most agent-design advice from early 2025 is already a historical curiosity. One talk survived: Barry Zhang, a researcher at Anthropic, gave a 14-minute distillation of Anthropic's "Building Effective Agents" research post from AI Engineer Summit. Anthropic was still teaching the same patterns at their Code w/ Claude workshops eight days ago. It endures because it gives you three rules and a checklist that actually survive contact with production.
+
+## Rule 1: Don't Build Agents for Everything
+
+Zhang draws a clean line. A **workflow** has predefined control flow: fixed sequence, predictable cost. An **agent** decides its own trajectory based on environment feedback. More agency means more capability, but also more cost, latency, and error surface. The question is not whether you *can* build an agent, but whether you *should*. Zhang offers a four-axis checklist.
+
+### The Four-Axis Checklist
+
+**1. Task complexity.** Agents thrive in ambiguous problem spaces. If you can draw the full decision tree on a whiteboard, build that tree explicitly. It will be cheaper and give you more control.
+
+**2. Task value.** Exploration costs tokens. If your budget per task is around ten cents, you can only afford 30 to 50 LLM calls. A workflow handling the most common scenarios captures most of the value at a fraction of the cost.
+
+**3. Derisking critical capabilities.** Before building an agent, verify the model can already do the hard parts of the task reliably in isolation. Bottlenecks in the trajectory multiply cost and latency.
+
+**4. Cost of error and error discovery.** If errors are high-stakes and hard to discover, autonomous agents become very difficult to trust. Human-in-the-loop checkpoints help, but they limit scale.
+
+Coding scores well on all four axes because of verifiability: unit tests and CI make errors cheap to discover. That property is what separates a good agent use case from an expensive one.
+
+## Rule 2: Keep It Simple
+
+An agent at its core is a model using tools in a loop. Three components define it: environment, tools, and system prompt. Zhang's team built three visually different agent products at Anthropic that shared nearly the same backbone and code. The only real design decisions were which tools to offer and what prompt to give. Get the behavior right first with one model, one toolset, one prompt in a loop. Then optimize (cache trajectories, parallelize tool calls, surface progress). A common mistake is inverting this order and optimizing the wrong system.
+
+## Rule 3: Think Like Your Agents
+
+A common pattern in agent development is designing from the builder's perspective, then getting confused when the agent makes mistakes. The fix is to put yourself in the agent's context window: do a task with only the information the agent has and only the tools it can call. At each inference step, the model runs on 10,000 to 20,000 tokens of context. If you have never looked at a problem from inside that constraint, you are debugging blind.
+
+There is also a five-minute shortcut. Paste your system prompt and tool descriptions into Claude and ask whether any instruction is ambiguous, whether the tool descriptions make sense, and what would help it make better decisions. That catches friction your agent would otherwise surface as a runtime failure.
+
+## Why This Matters for Developers
+
+For enterprise teams, the highest-leverage change is usually Rule 1. The four-axis checklist gives you a defensible framework for the conversation that often gets skipped: should this be an agent, or should this be a well-designed workflow? The teams that apply these rules end up building fewer agents, but the agents they build have a real path to production. That is the discipline: build fewer agents, and build the ones that can actually survive.
+
+In [Part 2](/posts/skills-paradigm-architecture-part-2), what the architecture looks like in practice, and why Anthropic's own team stopped building agents entirely.

@@ -1,0 +1,36 @@
+---
+title: "AI Coding Tools Tripled Production Incidents in Faros's Largest Study Yet"
+description: "Faros AI's 2026 report, covering 22,000 developers, shows AI coding tools tripled production incidents and pushed 31% more PRs to production without review."
+date: 2026-05-15
+published: true
+tags: ['AI', 'Engineering', 'Developer Tools']
+---
+
+![Bumper-to-bumper traffic on a city street, brake lights glowing](/posts/faros-acceleration-whiplash.jpg)
+
+**Date:** May 2026
+**Source:** [Faros AI, 2026 AI Engineering Report](https://www.faros.ai/blog/ai-software-engineering)
+
+Faros AI, an engineering intelligence platform that aggregates data across dev tools, found a paradox in its 2025 study: teams using AI coding tools merged 98% more PRs with zero improvement in DORA (DevOps Research and Assessment) metrics. I covered that data in [98% More Pull Requests. Zero More Delivery.](/posts/ai-productivity-paradox) The 2026 study doubles the sample (22,000 developers across 4,000 teams) and shows the paradox getting worse.
+
+The throughput gains are real. Epics completed per developer increased 66%. Task throughput rose 34%. PR merge rate climbed 16%.
+
+The quality signal moved in the opposite direction, faster. Bugs per developer increased 54% (up from 9% in the 2025 study). Production incidents per PR tripled. Code churn (lines rewritten shortly after commit) grew 10x. PR size ballooned 51%. Median review time increased 5x. Faros calls this pattern "Acceleration Whiplash."
+
+## 31% of PRs Are Merging Without Review
+
+Faros found that 31.3% more PRs are merging without any human review after AI tool adoption. Reviewers cannot keep pace with the volume of AI-generated output, so code reaches production with no oversight at a structurally higher rate.
+
+The mechanism is straightforward. A developer using an AI coding tool produces more PRs per day. Each PR is 51% larger. Reviewers have the same number of hours. What gives is review coverage.
+
+This is the same bottleneck dynamic from the 2025 data (speeding up code production without speeding up everything downstream), but the 2026 numbers show it compounding. Quality degradation was consistent across both low and high maturity engineering organizations. Strong CI/CD practices and review processes did not insulate teams, because those processes were sized for a lower-throughput world.
+
+## Why This Matters for Developers
+
+The practical question is no longer whether to adopt AI coding tools. Competitive pressure will push adoption regardless. The question is whether your review and testing infrastructure can absorb the volume increase.
+
+- **Enforce branch protection rules requiring at least one review before merge.** Check every repository, including the internal tooling repos where developers experiment with AI coding first. If exceptions exist, AI-generated volume will find them.
+- **Track PR review coverage as a first-class metric.** Most teams track throughput (PRs merged, stories closed). Few track the ratio of PRs that received meaningful review. When that ratio starts dropping, your review pipeline is saturated.
+- **Report incident rate alongside throughput, always.** A 66% increase in epics delivered looks excellent in a quarterly review. The same number alongside a 3x increase in production incidents looks like a net loss.
+
+Amdahl's Law applies here: speeding up one component of a system only helps to the degree that the rest of the system can keep pace. AI tools accelerated the fastest part of software development (writing code) while review, testing, and incident response absorbed the overflow. The organizations that benefit from these tools will be the ones that invested in review and testing capacity before they invested in code generation speed. For everyone else, the bill arrives as incident load.

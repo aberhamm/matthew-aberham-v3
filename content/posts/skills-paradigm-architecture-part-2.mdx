@@ -1,0 +1,53 @@
+---
+title: "The Four-Layer Architecture for General Agents"
+description: "One general agent plus domain skills beats building custom agents. The four-layer architecture that makes it work."
+date: 2026-05-15
+published: true
+tags: ['AI', 'Agents', 'Architecture']
+---
+
+![Colorful building blocks stacked in modular layers](/posts/skills-paradigm-architecture-part-2.jpg)
+
+**Date:** May 2026
+**Source:** Anthropic developer talks (Barry Zhang, Meesh)
+
+In [Part 1](/posts/three-rules-for-building-agents-part-1), I covered Barry Zhang's three rules for building agents: don't build one for everything, keep it simple, and think like your agents. Those rules give you the discipline. The architecture that follows from them is a general agent equipped with domain-specific skills.
+
+## Code as a Universal Interface
+
+After building Claude Code, Anthropic's team noticed that the same scaffolding (a model loop, Bash, a file system, code execution) that made a good coding agent also made a good financial reporting agent, a good research agent, and a good document workflow agent.
+
+Code is not just a use case. It's a universal interface to the digital world. Generating a financial report means calling an API, organizing data in the file system, analyzing it with Python, and synthesizing results into Office formats. The underlying architecture is the same one that writes software.
+
+If the agent architecture is universal, the problem isn't building different agents for different domains. The problem is teaching one general agent the expertise each domain requires.
+
+## Skills: Composable Domain Expertise
+
+Anthropic's answer is Agent Skills: an organized collection of files that packages composable procedural knowledge for an agent. Concretely, a skill is a folder containing a `skill.md` file with metadata and instructions, optional scripts, and supporting assets.
+
+Skills are version-controlled in Git, shared across teams, and deliberately simple so both humans and agents can create them. The scaling mechanism is progressive disclosure: only the metadata loads initially, and the full skill body enters context only when needed. A single agent can compose with hundreds of skills without overwhelming the context window.
+
+## The Four-Layer Architecture
+
+The architectural payoff is a general agent that converges on four layers:
+
+1. **Agent loop.** The core model loop managing the context window.
+2. **Runtime environment.** A file system and code execution capability where the agent does its work.
+3. **MCP servers.** Connections to external systems (APIs, databases, services) providing the agent's reach into the outside world. Skills complement these by encoding expertise for *how* to use those connections effectively.
+4. **Skills library.** Domain expertise pulled into context only when needed at runtime.
+
+Giving an agent a new capability becomes a matter of equipping it with the right MCP servers and the right skills, not building a new agent.
+
+## A Worked Example: The Handoff Skill
+
+Long Claude Code sessions degrade over time. Even after compacting, the session carries forward failed reasoning: dead-end assumptions, the same broken approaches recurring. I started writing a handoff file before clearing each session (goal, current state, what was tried, why it failed, what to try next), then loading it into a fresh session. The pattern worked, so I packaged it as a skill.
+
+Three design decisions made it effective. First, the description field specifies proactive triggers, not just explicit invocations. The agent recognizes when the same fix has failed twice and suggests a handoff rather than retrying. Second, the "What's been tried and failed" section is required, not optional. Failure knowledge is the most expensive kind to lose. Third, an explicit anti-patterns section prevents regression, including a direct prohibition on hedging language ("we explored several promising avenues"). Most skills omit anti-patterns entirely; including them stops the agent from defaulting to verbose, equivocating output.
+
+## Why This Matters for Developers
+
+If you're building agent capabilities for an organization, the four-layer architecture gives you three questions: what runtime, what MCP servers, what skills?
+
+The agent runtime is a buy decision. MCP servers are an integration task. Skills encoding your domain expertise are where your team's unique value lives. Each layer evolves independently, and skills are real artifacts that ship to clients: a version-controlled folder that can be reviewed, tested, and owned by the client after engagement.
+
+Mapping the four layers before scoping any agent work keeps the question honest. The skills layer, where you encode the domain expertise your organization has spent years accumulating, is where your competitive advantage lives.
