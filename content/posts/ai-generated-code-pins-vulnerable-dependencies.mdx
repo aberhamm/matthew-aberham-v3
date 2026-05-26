@@ -1,0 +1,45 @@
+---
+title: "AI-Generated Code Pins Vulnerable Dependencies 55% of the Time"
+description: "LLMs default to library versions that appeared most in training data. Those versions carry known CVEs up to 55.7% of the time, and the bias is structural."
+date: 2026-05-24
+published: true
+tags: ['Security', 'AI', 'Supply Chain']
+---
+
+![An old rusty padlock on a wooden door](https://images.unsplash.com/photo-1768573489886-3980313cba06?w=1600&q=80&auto=format&fit=crop)
+
+**May 24, 2026** | Source: [arxiv 2605.06279](https://arxiv.org/abs/2605.06279) (published May 7, 2026)
+
+> **Research disclosure:** Structural bias in LLM-generated dependency version selection
+
+When an LLM generates code that imports a library, it usually pins a specific version. A new study looked at which versions LLMs actually choose, and the results are bad. Between 36.7% and 55.7% of the library versions specified by LLMs contain known CVEs (Common Vulnerabilities and Exposures). Of those vulnerabilities, 62.7% to 74.5% are rated Critical or High severity.
+
+The mechanism is straightforward. Models default to the version numbers that appeared most frequently in their training data. Those tend to be older, widely-documented versions from Stack Overflow answers, tutorials, and blog posts written years ago. The versions were current when the training data was authored. They are not current now, and many have since accumulated serious security disclosures.
+
+72% to 91% of the vulnerabilities were publicly disclosed before the model's training cutoff. The models had access to the CVE information during training. They pinned the vulnerable versions anyway, because version popularity in training data outweighs security metadata. This is not a knowledge gap. It is a structural bias in how models weight version selection.
+
+## The Convergence Problem
+
+All models tested converge on the same set of risky versions. This is not random variation between providers; it is the same bias replicated across architectures because they all trained on roughly the same corpus of public code. If your team uses Claude for backend scaffolding and a contractor uses GPT for a microservice, both will tend to pin the same outdated versions of the same libraries.
+
+"Use the latest version" as a system prompt instruction helps but does not fully solve it. Models still hallucinate version numbers, confidently generating strings like `4.3.1` for a package whose latest release is `5.1.0`. The hallucinated version often corresponds to a real but outdated release, one that happens to carry unpatched vulnerabilities.
+
+The Shai-Hulud worm demonstrated in May that compromised packages in the supply chain are an active, escalating threat. Version pinning decisions are security-critical. An AI agent that scaffolds a project, pins 15 dependencies at versions from 2022, and passes all functional tests has just created a surface area that no test in the CI pipeline will flag, because dependency scanning and code review are typically separate workflows.
+
+## Why This Matters for Developers
+
+The security conversation around AI-generated code has focused on the code itself: XSS, SQL injection, auth logic bugs. The dependencies the AI pins are a separate pipeline in most organizations, often running days later or only on scheduled scans. The code might be flawless while the versions it imports carry critical CVEs.
+
+Run dependency audits on AI-generated scaffolding immediately, not after the first feature PR. The vulnerable versions get pinned at project creation. By the time a security scan runs in CI two weeks later, the lockfile is already committed and other packages have built on those versions.
+
+Treat every pinned version as unverified. Cross-reference against the package registry's actual latest release and the CVE database before committing a lockfile. Add `npm audit` / `pip audit` / `cargo audit` as a blocking CI step, not an informational one. If your dependency scanner runs but does not block the merge, it will not catch this class of failure in time.
+
+Consider unpinning patch versions in AI-generated manifests. A version range like `^4.3.0` will at least pick up patch-level security fixes, while an exact pin like `4.3.0` locks in whatever vulnerabilities existed at that release. "Use latest" system prompts reduce the problem but do not eliminate it; the audit step is still required.
+
+Until models are fine-tuned to weight CVE metadata over training-data frequency, the audit step is on developers. Dependency scanning and code review should run together on AI-generated code, not as separate steps separated by days or weeks. That tooling gap is closable today.
+
+---
+
+## Sources
+
+- [arxiv 2605.06279](https://arxiv.org/abs/2605.06279). Structural bias in LLM dependency version selection.
