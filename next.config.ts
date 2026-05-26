@@ -6,18 +6,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/a/script.js',
-        destination: 'https://a.matthewaberham.com/script.js',
-      },
-      {
-        source: '/a/api/send',
-        destination: 'https://a.matthewaberham.com/api/send',
-      },
-    ];
-  },
   images: {
     remotePatterns: [
       {
