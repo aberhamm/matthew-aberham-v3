@@ -1,0 +1,53 @@
+---
+title: "AI Writes 90% of the Code. Engineering Velocity Went Up 10%."
+description: "Almost every impressive AI coding demo is greenfield. Almost every real engineering engagement is brownfield. That gap explains why the productivity numbers don't match the headlines."
+date: 2026-04-30
+published: true
+tags: ['AI', 'Engineering', 'Developer Tools']
+---
+
+When you hear that AI writes 90% of the code at Anthropic, it sounds like the game is over for programmers. Then you look at Google, where AI generates between 30% and 75% of new code depending on which disclosure you read, and engineering velocity has improved by roughly 10%. The gap between those two numbers is the story.
+
+The gap has a name. In software engineering it is called the greenfield/brownfield distinction. Helen Edwards, co-founder of the Artificiality Institute, put it sharply this month: almost every impressive AI coding demo is greenfield. Start from nothing, build a thing, ship it. No history to navigate, no invisible contracts to break, no institutional memory to respect.
+
+The real world is brownfield. You are working inside a system that has been accumulating decisions for years, sometimes decades, written by people who left long ago. Choices that look arbitrary turn out to be load-bearing. Nobody knows why that function exists until someone deletes it and production breaks.
+
+## Two Numbers That Are Both Correct
+
+Anthropic's 90% figure is real. For Claude Code specifically, individual engineers report writing essentially no code manually. But Anthropic is building greenfield systems, owns the model it uses, and has complete institutional context baked into every team. The comparison to a client engagement on a ten-year-old .NET monolith is not direct.
+
+A survey of 900 developers by Pragmatic Engineer, Gergely Orosz's engineering industry newsletter, reports teams spending hours per day correcting AI output on existing systems. That number is also real. Both are correct. They are measuring different things.
+
+Google sits in between. Massive AI code generation, modest velocity gains. That ratio is the brownfield tax: the cost of fitting new code into a system the model does not understand.
+
+## The Gap Is Structural, Not Temporary
+
+The brownfield gap is not a temporary limitation waiting on a better model. Context windows are finite. Codebases are not. An AI tool reading a fragment of a legacy system has the same problem a new contractor has on day one: competent at the craft, missing the archaeology. The difference is that the contractor can ask someone. The model invents a plausible answer.
+
+This distinction applies beyond coding. Every job has a greenfield version and a brownfield version. The greenfield version is clean, describable, transferable to a process or a model. The brownfield version is tangled with history, context, relationships, and institutional knowledge that lives in people's heads and in undocumented decisions. AI has largely handled the greenfield version of most jobs. The brownfield version is what remains, and it is the harder part.
+
+## Why This Matters for Developers
+
+AI works differently on legacy systems, and the overhead is real.
+
+The teams getting the most value from AI on existing codebases are the ones who treat brownfield AI work as an archaeological project first. They document the context, explain the why, and maintain agent-readable architecture notes alongside the codebase. A `CLAUDE.md` or equivalent that explains how the system works, where the integration points are, and which decisions are load-bearing. Teams that skip this step spend their productivity gains on corrections.
+
+Three concrete moves for teams working on existing systems now.
+
+**Separate greenfield from brownfield when scoping.** New features, new services, and net-new components get the full AI productivity estimate. Anything touching existing code, refactoring, or debugging gets a heavy discount until context is established. Treating them the same produces optimistic timelines on the work that matters most.
+
+**Build context documents for agent consumption.** Architecture overviews, integration maps, and documented "why" formatted for the tools the team uses. This is the prep work that unlocks AI velocity on existing systems. Build it into engagement setup, not mid-sprint discovery.
+
+**Benchmark against Google's gap, not Anthropic's ceiling.** When clients or leadership benchmark against the 90% figure, the honest response is that the comparison is not valid for existing systems. Google's 75% code generation to 10% velocity improvement is the more relevant reference point for any team modernizing a legacy application.
+
+As context windows grow and models improve, the greenfield ceiling will keep rising. The brownfield floor will rise too, but slower, because the bottleneck is not the model's capability. It is the availability of context that was never written down. The teams that start writing it down now are the ones who will actually capture the productivity gains that the headlines keep promising.
+
+---
+
+## Sources
+
+- Edwards, H., [Artificiality Institute / Stay Human](https://www.artificialityinstitute.org/about). The greenfield/brownfield framing.
+- [Google CEO: AI writes 30%+ of code](https://medium.com/design-bootcamp/google-ceo-sundar-pichai-ai-writes-over-30-of-our-code-111eb360f272). Early 2025 Pichai disclosure.
+- [Google 75% AI code at Cloud Next 2026](https://www.aixploria.com/en/ai-radar/google-75-percent-code-ai-generated-cloud-next-2026/). Updated figure.
+- [Anthropic 90% figure: LessWrong analysis](https://www.lesswrong.com/posts/prSnGGAgfWtZexYLp/is-90-of-code-at-anthropic-being-written-by-ais). Breakdown of the company-wide and product-level numbers.
+- Masse, JJ, ["The Brownfield Problem"](https://www.jjmasse.com/2026/03/06/the-brownfield-problem-why-most-ai-development-advice-ignores-your-actual-codebase/).
