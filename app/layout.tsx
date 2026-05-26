@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import localFont from 'next/font/local';
+import Script from 'next/script';
 import './globals.css';
 import { GlobalStateProvider } from './providers/GlobalStateProvider';
 
@@ -94,6 +95,9 @@ export default async function RootLayout({
         style={{ fontFamily: 'var(--font-nhass), system-ui, sans-serif' }}
       >
         <GlobalStateProvider initialState={{}}>{children}</GlobalStateProvider>
+        {process.env.NODE_ENV === 'production' && (
+          <Script defer src="/a/script.js" data-website-id="9bba632e-b581-48c2-b61a-11bd59b9f079" />
+        )}
       </body>
     </html>
   );
