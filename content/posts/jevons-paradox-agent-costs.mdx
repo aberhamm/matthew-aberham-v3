@@ -1,0 +1,64 @@
+---
+title: "Agent Costs Tripled While Per-Token Prices Dropped. The Jevons Paradox for AI."
+description: "Per-token prices are falling aggressively, but enterprise AI bills are rising. Agent architectures consume tokens at 10-100x single-turn rates, and cheaper calls lead to more calls."
+date: 2026-05-24
+published: true
+tags: ['AI', 'Engineering', 'Economics']
+---
+
+![A pile of different types of coins](https://images.unsplash.com/photo-1644871913429-9ed7696180cc?w=1600&q=80&auto=format&fit=crop)
+
+**2026-05-24** | Sources: [Fortune](https://fortune.com/), [Tom's Hardware](https://www.tomshardware.com/), [DeepSeek pricing](https://platform.deepseek.com/), [Forge (GitHub)](https://github.com/forge-ai/forge), [GitHub Copilot billing changes](https://github.blog/)
+
+> Economics / AI Infrastructure
+
+In 1865, William Stanley Jevons published a finding that confused his contemporaries. Coal-fired steam engines were getting more efficient, burning less coal per unit of work. Coal consumption was rising, not falling. Efficiency made new applications viable, which meant more total coal burned. The paradox holds wherever efficiency unlocks demand faster than it reduces per-unit cost.
+
+The same dynamic is playing out in AI token economics right now.
+
+## Falling Unit Prices, Rising Total Spend
+
+DeepSeek made a permanent 75% price cut on V4 Pro on May 22. Cursor Composer 2.5 offers $0.50 per million input tokens. Anthropic's Haiku tier has dropped repeatedly. Competition on per-token pricing is aggressive and accelerating. If you only looked at unit costs, you would expect enterprise AI bills to be falling.
+
+They are not. Fortune reported that AI workloads at Microsoft now cost more than paying human employees for equivalent tasks. Tom's Hardware covered multiple companies pulling back from agentic AI projects because costs exceeded forecasts by 3-5x. The gap between per-token prices (down) and total spend (up) is the Jevons Paradox in real time.
+
+## Why Agents Eat Tokens
+
+A single-turn chat completion (user sends prompt, model responds) consumes tokens once. An agent loop doing the same logical task might make 20-80 LLM calls: decomposing the problem into sub-tasks, calling tools, reading results, retrying on failure, reasoning through chain-of-thought, verifying its own output. Each call includes the full conversation history as input. Token consumption scales somewhere between 10x and 100x compared to single-turn for the same end result.
+
+When individual calls cost $15 per million tokens, teams built architectures that minimized calls. When calls dropped to $3 per million, then $0.50, teams built architectures that made far more calls because they could afford to. Retry loops, speculative branching, multi-agent delegation, ensemble verification. Each is a reasonable architectural choice at lower unit prices, and each multiplies total consumption.
+
+Cheaper tokens did not reduce token spend. Cheaper tokens funded more complex architectures that spend more tokens.
+
+## Four Responses Emerging
+
+GitHub Copilot moves to usage-based "AI Credits" billing on June 1, replacing flat-rate subscriptions. Anthropic is introducing agent metering. Flat pricing assumed predictable per-user consumption; agentic workloads broke that assumption.
+
+On the supply side, DeepSeek, Mistral, and others continue driving unit costs down. This helps on a per-call basis but does nothing to address the architectural multiplier.
+
+Forge, an open-source agent harness (680 points on Hacker News, May 20), demonstrated that guardrails on small models can achieve 84% on agentic benchmarks where the same models scored single digits without guardrails. Applied to Sonnet 4.6, the same guardrails lifted scores from 85% to 98%. You can get frontier-quality agent behavior from much cheaper models if the harness is good enough.
+
+Then there is model routing: using a cheap model (8B parameter, $0.10/M tokens) for high-volume grunt work (file reads, search, simple transformations) and routing only genuinely hard decisions to frontier models ($15/M tokens). The cost difference between routing well and routing poorly on a 50-call agent loop can be 10-50x.
+
+## Why This Matters for Developers
+
+The high-value developer work right now is making agent architectures token-efficient.
+
+Instrument your token spend per agent run. Most teams track total monthly API cost; few track cost-per-task or tokens-per-agent-loop. Without that visibility, you cannot tell whether a 50-call investigation cost $0.12 or $4.80, and you cannot optimize what you do not measure.
+
+Implement model routing. Not every call in an agent loop needs the same model. File reads, grep results, and simple classification can run on Haiku or an 8B model. Complex reasoning, code generation, and final synthesis get routed to Sonnet or Opus. The harness decides, not the user.
+
+Evaluate middleware before scaling model size. Forge's results suggest that for many agentic tasks, the right guardrails on a small model outperform a large model with no guardrails, at a fraction of the cost. Before upgrading to a more expensive model because agent quality is low, check whether the problem is the model or the harness around it.
+
+The developers who build routing, metering, and efficient harnesses into their agent infrastructure are the ones whose projects survive the next budget review. Everyone else will be explaining why per-token costs dropped 75% and their bill went up.
+
+---
+
+## Sources
+
+- Jevons, W. S. (1865), *The Coal Question*. The original observation on efficiency and consumption.
+- [Fortune: AI costs exceed human employee costs at Microsoft](https://fortune.com/) (May 2026).
+- [Tom's Hardware: Companies pulling back from agentic AI](https://www.tomshardware.com/) (May 2026).
+- [DeepSeek V4 Pro 75% price cut announcement](https://platform.deepseek.com/) (May 22, 2026).
+- [Forge: Guardrails for agentic coding](https://github.com/forge-ai/forge). 8B model achieving 84% on agentic benchmarks with middleware.
+- [GitHub Copilot AI Credits billing](https://github.blog/) (effective June 1, 2026).
