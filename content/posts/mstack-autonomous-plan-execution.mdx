@@ -1,0 +1,49 @@
+---
+title: "mstack: The Loop I Built to Ship Code While I'm Away"
+description: "mstack is an autonomous plan executor for solo devs who ship on main. You make every decision up front, the AI ships while you're gone, and you review a changelog when you're back."
+date: 2026-07-02
+published: true
+tags: ['AI', 'Agents', 'Engineering', 'Developer Tools']
+---
+
+![A conveyor belt carrying metal parts through an automated production line](https://images.unsplash.com/photo-1727373203579-7b8984cb8120?w=1600&q=80&auto=format&fit=crop)
+
+[Loop engineering](/posts/loop-engineering-discipline-above-prompting) is the practice of designing systems that prompt coding agents for you instead of prompting them yourself. That post covers the general idea. This is the specific system I built: mstack, an autonomous plan executor for solo developers who ship on main.
+
+The premise is a division of labor. I make every decision up front: architecture, scope, what "done" means, how to verify it. Then I walk away. The AI executes directly on main, never pushes, and I come back to a changelog of what it did.
+
+## Plan, validate, walk away
+
+Three commands run the whole thing.
+
+`/mstack-plan-multi` takes a one-line goal, "add multi-tenant billing," and decomposes it into ordered plan files with dependencies, acceptance criteria, and verification checks. It asks clarifying questions and reads my codebase first. I review and edit the plans.
+
+`/mstack-plan-doctor` scores each plan on clarity, testability, scope-fit, and autonomy-readiness. Anything below 8 out of 10 gets auto-fixed from codebase analysis; anything without an executable verification check gets blocked. It also audits my test infrastructure and reports a walk-away confidence level. A project with strict types, real unit coverage, and Playwright end-to-end tests earns HIGH. A project with three unit tests earns LOW.
+
+`/goal all pending mstack plans are done or failed` starts the run. I close the laptop.
+
+## What runs while I'm gone
+
+For each plan, in dependency order, the system implements the full scope, then runs a health gate: typecheck, lint, unit tests, E2E, and dead-code analysis, each scored 0 to 10 into a weighted composite. Tests carry the most weight, typecheck next, then lint and dead code. A plan that adds 200 lines of dead code is a regression even when every test passes, and a regression triggers investigation instead of a commit.
+
+Then a separate review agent reads the diff, because the agent that wrote the code should not be the one that approves it. If everything passes, it commits with a conventional message referencing the plan file and moves on.
+
+When a plan fails, it does not retry blindly. It enters structured investigation: three attempts per root-cause category, at most three categories, nine strikes total. If it exhausts them, the plan is marked failed with a written diagnosis and the next plan proceeds. No infinite loops, no silent stalls.
+
+## Your test suite is the confidence level
+
+mstack does not replace your tests. It runs them as a gate on every plan, which means the quality of autonomous execution is capped by the depth of your verification. This is the constraint Andrej Karpathy points at when he says LLMs automate what you can verify. If you cannot verify it, you cannot walk away from it. plan-doctor exists to tell you, before you leave, which tier you are in and what is missing.
+
+## It gets better with use
+
+Every execution extracts patterns, pitfalls, and conventions into a knowledge base. A pitfall found in plan 5, the ORM has no upsert on this table, surfaces as a constraint in plan 12 if it touches the same files. Entries carry confidence scores, decay after two weeks without reuse, and auto-prune when the files they reference no longer exist. Health scores are tracked across runs, so I can see whether the codebase is trending healthier or sicker over fifty executions, not just within one.
+
+## Handoffs for long sessions
+
+Long agent sessions accumulate dead ends, and the more of that history the model carries, the worse its judgment gets. Compaction does not fix it, because the dead ends are real. mstack's handoff captures only what matters: the goal, current state, what was tried and ruled out, and the single most promising next step. It saves a checkpoint I can resume in a fresh session, and it triggers on its own after the same fix fails twice, suggesting a handoff instead of a third doomed retry.
+
+## Where this is heading
+
+mstack is built for Codex and Claude Code and reads your project's AGENTS.md to discover its health commands. It is open source: [github.com/aberhamm/mstack](https://github.com/aberhamm/mstack).
+
+The larger bet is that the unit of AI-assisted work is shifting from the prompt to the plan. Prompts are ephemeral; plans are reviewable artifacts with acceptance criteria you can check. If that holds, the skill worth building now is writing plans specific enough to walk away from.

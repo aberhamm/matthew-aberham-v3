@@ -32,7 +32,7 @@ Plugins and connectors. [MCP-based integrations](/posts/agent-orchestration-engi
 
 Sub-agents. Separate verification agents that review the output of generation agents. Never let the author grade its own work.
 
-I [built a system](https://github.com/aberhamm/mstack) that implements all five. I type one sentence describing a feature. The system decomposes it into ordered plans, validates each plan, then runs autonomously: pick a plan, implement it, run the health check, commit, extract learnings, pick the next plan. I come back to a commit history. The automation triggers on my commit. Each task runs in its own worktree. Skill files encode project conventions. MCP servers connect to my test infrastructure. A review agent validates the output before the commit lands.
+I built a system called [mstack](/posts/mstack-autonomous-plan-execution) that implements all five. I type one sentence describing a feature. The system decomposes it into ordered plans, validates each plan, then runs autonomously: pick a plan, implement it, run the health check, commit, extract learnings, pick the next plan. I come back to a commit history. The automation triggers on my commit. Each task runs in its own worktree. Skill files encode project conventions. MCP servers connect to my test infrastructure. A review agent validates the output before the commit lands.
 
 I think before and review after. The loop handles the middle.
 
