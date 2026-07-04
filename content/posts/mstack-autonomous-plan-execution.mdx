@@ -24,7 +24,7 @@ Three commands run the whole thing.
 
 ## What runs while I'm gone
 
-For each plan, in dependency order, the system implements the full scope, then runs a health gate: typecheck, lint, unit tests, E2E, and dead-code analysis, each scored 0 to 10 into a weighted composite. Tests carry the most weight, typecheck next, then lint and dead code. A plan that adds 200 lines of dead code is a regression even when every test passes, and a regression triggers investigation instead of a commit.
+For each plan, in dependency order, the system implements the full scope, then runs a health gate: typecheck, lint, unit tests, shell checks, and dead-code analysis, each scored 0 to 10 into a weighted composite. Tests carry the most weight, typecheck next, then lint and dead code. A plan that adds 200 lines of dead code is a regression even when every test passes, and a regression triggers investigation instead of a commit.
 
 Then a separate review agent reads the diff, because the agent that wrote the code should not be the one that approves it. If everything passes, it commits with a conventional message referencing the plan file and moves on.
 
