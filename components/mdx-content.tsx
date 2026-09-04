@@ -11,13 +11,16 @@ interface ComponentProps {
   children?: ReactNode;
 }
 
-function MdxImage({ alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) {
+function MdxImage({
+  alt,
+  ...props
+}: React.ImgHTMLAttributes<HTMLImageElement>) {
   const [loaded, setLoaded] = useState(false);
 
   return (
     <span className="relative mt-6 block aspect-video w-full overflow-hidden rounded-md border">
       {!loaded && (
-        <span className="bg-muted absolute inset-0 animate-shimmer" />
+        <span className="bg-muted animate-shimmer absolute inset-0" />
       )}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -122,7 +125,7 @@ const components = {
   ),
   pre: ({ children, ...props }: ComponentProps) => (
     <pre
-      className="bg-white mt-6 mb-4 overflow-x-auto rounded-lg border py-4 font-mono text-sm text-zinc-900 [&>code]:grid [&>code]:bg-transparent [&>code]:p-0 [&>code]:border-0 [&>code]:rounded-none [&>code]:text-[inherit]"
+      className="mt-6 mb-4 overflow-x-auto rounded-lg border bg-white py-4 font-mono text-sm text-zinc-900 [&>code]:grid [&>code]:rounded-none [&>code]:border-0 [&>code]:bg-transparent [&>code]:p-0 [&>code]:text-[inherit]"
       {...props}
     >
       {children}

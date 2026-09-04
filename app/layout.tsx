@@ -96,7 +96,11 @@ export default async function RootLayout({
       >
         <GlobalStateProvider initialState={{}}>{children}</GlobalStateProvider>
         {process.env.NODE_ENV === 'production' && (
-          <Script defer src="/a/script.js" data-website-id="9bba632e-b581-48c2-b61a-11bd59b9f079" />
+          <Script
+            defer
+            src="/a/script.js"
+            data-website-id="9bba632e-b581-48c2-b61a-11bd59b9f079"
+          />
         )}
       </body>
     </html>

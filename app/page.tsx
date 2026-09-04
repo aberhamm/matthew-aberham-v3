@@ -102,7 +102,7 @@ export default function Home() {
                       <Link
                         key={post.slug}
                         href={`/blog/${post.slug}`}
-                        className="relative w-fit text-sm font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-accent-pop after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:text-accent-pop hover:after:origin-bottom-left hover:after:scale-x-100"
+                        className="after:bg-accent-pop hover:text-accent-pop relative w-fit text-sm font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
                       >
                         {post.title}
                       </Link>
@@ -115,7 +115,7 @@ export default function Home() {
                       <Link
                         key={post.slug}
                         href={`/blog/${post.slug}`}
-                        className="relative w-fit text-sm font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-accent-pop after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:text-accent-pop hover:after:origin-bottom-left hover:after:scale-x-100"
+                        className="after:bg-accent-pop hover:text-accent-pop relative w-fit text-sm font-medium transition-colors after:absolute after:bottom-[2px] after:left-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:transition-transform after:duration-150 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
                       >
                         {post.title}
                       </Link>

@@ -44,16 +44,30 @@ export default function BlogPage() {
                 <p className="text-muted-foreground line-clamp-3 text-sm">
                   {post.description}
                 </p>
-                <time
-                  dateTime={post.date}
-                  className="text-muted-foreground text-xs"
-                >
-                  {new Date(post.date).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </time>
+                <div className="flex items-center gap-2">
+                  <time
+                    dateTime={post.date}
+                    className="text-muted-foreground text-xs"
+                  >
+                    {new Date(post.date).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </time>
+                  {post.tags && post.tags.length > 0 && (
+                    <div className="flex gap-1.5">
+                      {post.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="bg-muted text-muted-foreground rounded-md px-1.5 py-0.5 text-xs"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </Link>
             </article>
           ))}

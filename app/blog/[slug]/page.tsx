@@ -19,7 +19,11 @@ function getRelatedPosts(currentSlug: string, currentTags: string[] = []) {
         ? p.tags.filter((t) => currentTags.includes(t)).length
         : 0,
     }))
-    .sort((a, b) => b.relevance - a.relevance || new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort(
+      (a, b) =>
+        b.relevance - a.relevance ||
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+    )
     .slice(0, 3);
 }
 
@@ -152,9 +156,8 @@ export default async function PostPage({
           <div>
             <p className="text-sm font-semibold">Matthew Aberham</p>
             <p className="text-muted-foreground mt-1 text-sm">
-              Solutions Architect and Full-Stack Engineer at Perficient.
-              Writing about AI developer tooling, infrastructure, and
-              security.
+              Solutions Architect and Full-Stack Engineer at Perficient. Writing
+              about AI developer tooling, infrastructure, and security.
             </p>
           </div>
         </div>
