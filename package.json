@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "contentlayer": "contentlayer2 build",
+    "verify:blog-redirects": "node scripts/verify-blog-migration-redirects.mjs",
     "dev": "contentlayer2 build && next dev --turbopack",
     "build": "ANALYZE=true contentlayer2 build && next build",
     "start": "next start",

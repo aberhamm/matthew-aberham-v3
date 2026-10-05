@@ -1,5 +1,6 @@
 import { withContentlayer } from 'next-contentlayer2';
 import type { NextConfig } from 'next';
+import blogMigrationRedirects from './content/blog-migration-redirects.json';
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
@@ -20,6 +21,14 @@ const nextConfig: NextConfig = {
   },
   compress: true,
   poweredByHeader: false,
+  redirects: async () => [
+    ...blogMigrationRedirects.redirects,
+    {
+      source: '/blog',
+      destination: 'https://matthew.systems/en/insights',
+      permanent: true,
+    },
+  ],
   headers: async () => [
     {
       source: '/:all*(svg|jpg|png|webp|avif)',
